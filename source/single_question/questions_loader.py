@@ -1,18 +1,15 @@
 import pandas as pd
-from source.consts.enums import DataDictQuestionType
-from source.data_etl.questionnaires_metadata.single_question.qualtrics_questions import QualtricsAgeQuestion
-from source.data_etl.questionnaires_metadata.utils.info_objects import QuestionInfo, QuestionsList
-from source.data_etl.questionnaires_metadata.utils.multiple_choice_loader import MultipleChoiceLoader
-from source.data_preprocessing.utils.timestamp_creator import TimestampCreator
 
+from source.consts.enums import DataDictQuestionType
+from source.consts.paths import DataDictionary_path, exceptional_items_path
+from source.single_question.qualtrics_questions import QualtricsAgeQuestion
+from source.utils.info_objects import QuestionsList, QuestionInfo
+from source.utils.multiple_choice_loader import MultipleChoiceLoader
+from source.utils.timestamp_creator import TimestampCreator
 
 # NOTE: Ensure pandas and numpy are installed in your environment.
 
 class QuestionLoader:
-    # extracts questions info from redcap
-
-    redcap_data_dict_path = r"C:\Users\USER\PycharmProjects\schneider-depression-lab\Data\external\questionnaires_metadata\ImmiRiskIPT2022_DataDictionary_2025-06-18.csv"
-    exceptional_items_path = r"C:\Users\USER\PycharmProjects\schneider-depression-lab\Data\external\questionnaires_metadata\questions_excluded_from_scores_calculation.xlsx"
     # column names:
     choices_col = "Choices, Calculations, OR Slider Labels"
     validation_col = "Text Validation Type OR Show Slider Number"
@@ -24,8 +21,8 @@ class QuestionLoader:
 
     def __init__(self):
         self.questions_collection = []
-        self.df = pd.read_csv(self.redcap_data_dict_path)
-        self.exceptional_items = pd.read_excel(self.exceptional_items_path)
+        self.df = pd.read_csv(DataDictionary_path)
+        self.exceptional_items = pd.read_excel(exceptional_items_path)
 
     def load_questions(self):
         for _, row in self.df.iterrows():

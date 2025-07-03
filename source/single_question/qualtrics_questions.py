@@ -1,5 +1,5 @@
 from source.consts.enums import QuestionType
-from source.data_etl.questionnaires_metadata.utils.info_objects import QuestionInfo
+from source.utils.info_objects import QuestionInfo
 
 
 class QualtricsAgeQuestion(QuestionInfo):

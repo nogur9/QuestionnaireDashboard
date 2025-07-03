@@ -1,15 +1,12 @@
 import pandas as pd
-
-from source.data_etl.questionnaires_metadata.scores.scores_loader import ScoresLoader
-from source.data_etl.questionnaires_metadata.utils.info_objects import QuestionnaireInfo, QuestionnairesList
-from source.data_etl.questionnaires_metadata.questionnaire.question_columns_mapper import SimpleQuestionMap
-from source.data_etl.questionnaires_metadata.single_question.questions_loader import QuestionLoader
+from source.questionnaire.question_columns_mapper import SimpleQuestionMap
+from source.scores.scores_loader import ScoresLoader
+from source.single_question.questions_loader import QuestionLoader
+from source.utils.info_objects import QuestionnairesList, QuestionnaireInfo
 
 
 class QuestionnaireLoader:
 
-    participant_types_file_path = r"C:\Users\USER\PycharmProjects\schneider-depression-lab\source\data_etl\questionnaires_metadata\questionnaire_participant_types.csv"
-    scmci_path = r"C:\Users\USER\PycharmProjects\schneider-depression-lab\Data\external\questionnaires_metadata\Depression Clinic SCMCI study measures 2024.xlsx"
     scmci_participant_type_map = {
         'Research Assistant, based on medical records': "Student",
          'Child/Adolescent': "Child",
@@ -22,7 +19,6 @@ class QuestionnaireLoader:
          'Research Clinical Staf': "Student",
          'Research Clinical Staff,  Based on medical records': "Student"
      }
-
 
 
     def __init__(self):

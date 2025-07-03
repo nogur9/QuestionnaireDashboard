@@ -1,6 +1,4 @@
-from source.data_etl.new_process.Transferring_Data_to_PostgreSQL.column_names_mapping.questions_mapping_creator import \
-    QuestionsMappingCreator
-import pandas as pd
+from source.utils.questions_mapping_creator import QuestionsMappingCreator
 
 
 class SimpleQuestionMap(QuestionsMappingCreator):

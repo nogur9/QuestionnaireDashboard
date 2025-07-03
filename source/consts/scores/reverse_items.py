@@ -1,0 +1,36 @@
+
+
+Reverse_Items = {
+        'sdq': ['sdq_7', 'sdq_11', 'sdq_14', 'sdq_21', 'sdq_25'],
+        'erc_rc': ['erc_rc_10', 'erc_rc_11', 'erc_rc_12'],
+        'ders': ['ders_1',
+                 'ders_2',
+                 'ders_6',
+                 'ders_7',
+                 'ders_8',
+                 'ders_10',
+                 'ders_17',
+                 'ders_20',
+                 'ders_22',
+                 'ders_24',
+                 'ders_34'],
+        'wai': ['wai_4', 'wai_10'],
+        'wai_immirisk_clin': ['wai_t_immi_4_clin', 'wai_t_immi_10_clin'],
+        'inq': [ 'inq_7', 'inq_8',  'inq_10', 'inq_13',  'inq_14', 'inq_15'],
+        'ders_p_m': ['ders_1_p_m',
+                 'ders_2_p_m',
+                 'ders_6_p_m',
+                 'ders_7_p_m',
+                 'ders_8_p_m',
+                 'ders_10_p_m',
+                 'ders_17_p_m',
+                 'ders_20_p_m',
+                 'ders_22_p_m',
+                 'ders_24_p_m',
+                 'ders_34_p_m'
+                ],
+        'trq_sf_maris_clin': ['trq_sf_maris_1_clin', 'trq_sf_maris_2_clin',
+                          'trq_sf_maris_3_clin', 'trq_sf_maris_4_clin'],
+
+        #'sdq_parents_m': ['sdq_7', 'sdq_11', 'sdq_14', 'sdq_21', 'sdq_25'],
+}

@@ -1,6 +1,7 @@
 from source.consts.enums import ScoringMethod
-from source.data_etl.questionnaires_metadata.scores.score_utils_loader import ScoreUtilsLoader
-from source.data_etl.questionnaires_metadata.utils.info_objects import ScoringInfo, ScoresList
+from source.scores.score_utils_loader import ScoreUtilsLoader
+from source.utils.info_objects import ScoresList, ScoringInfo
+
 
 class ScoresLoader:
 

@@ -1,6 +1,7 @@
 import pandas as pd
 from dateutil.parser import parse
-from source.data_etl.questionnaires_metadata.utils.multiple_choice_loader import MultipleChoiceLoader
+
+from source.utils.multiple_choice_loader import MultipleChoiceLoader
 
 
 # validators
@@ -18,8 +19,6 @@ class Validator:
 
     def _setup(self):
         pass
-
-
 
 
 class BinaryValidator(Validator):

@@ -1,16 +1,12 @@
+import pandas as pd
 from source.consts.scores.clusters import Clusters
 from source.consts.scores.questionnaire_columns import Scores_Columns, DEFAULT
 from source.consts.scores.reverse_items import Reverse_Items
-import pandas as pd
-
-from source.data_etl.questionnaires_metadata.questionnaire.question_columns_mapper import SimpleQuestionMap
-from source.data_etl.questionnaires_metadata.single_question.questions_loader import QuestionLoader
-from source.data_preprocessing.utils.timestamp_creator import TimestampCreator
+from source.single_question.questions_loader import QuestionLoader
 
 
 class ScoreUtilsLoader:
 
-    participant_types_file_path = r"C:\Users\USER\PycharmProjects\schneider-depression-lab\source\data_etl\questionnaires_metadata\questionnaire_participant_types.csv"
     type_rename_dict = {
         'm': 'f',
         'mother': 'father'
