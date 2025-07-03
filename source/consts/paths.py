@@ -1,4 +1,4 @@
-scmci_path = r"Data\Depression Clinic SCMCI study measures 2024.xlsx"
+scmci_path = r"Data\Depression_Clinic_SCMCI_study_measures_2024.xlsx"
 DataDictionary_path = r"Data\ImmiRiskIPT2022_DataDictionary_2025-06-18.csv"
 
 
