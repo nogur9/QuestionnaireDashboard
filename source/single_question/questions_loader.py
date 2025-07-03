@@ -1,7 +1,7 @@
 import pandas as pd
 
 from source.consts.enums import DataDictQuestionType
-from source.consts.paths import DataDictionary_path, exceptional_items_path
+from paths import DataDictionary_path, exceptional_items_path
 from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader

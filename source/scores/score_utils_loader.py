@@ -1,6 +1,6 @@
 import pandas as pd
 
-from source.consts.paths import participant_types_file_path
+from paths import participant_types_file_path
 from source.consts.scores.clusters import Clusters
 from source.consts.scores.questionnaire_columns import Scores_Columns, DEFAULT
 from source.consts.scores.reverse_items import Reverse_Items

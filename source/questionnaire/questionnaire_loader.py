@@ -1,6 +1,6 @@
 import pandas as pd
 
-from source.consts.paths import participant_types_file_path, scmci_path
+from paths import participant_types_file_path, scmci_path
 from source.questionnaire.question_columns_mapper import SimpleQuestionMap
 from source.scores.scores_loader import ScoresLoader
 from source.single_question.questions_loader import QuestionLoader
