@@ -1,6 +1,6 @@
 import pandas as pd
 
-from paths import participant_types_file_path
+from paths import participant_types_file_path_df
 from source.consts.scores.clusters import Clusters
 from source.consts.scores.questionnaire_columns import Scores_Columns, DEFAULT
 from source.consts.scores.reverse_items import Reverse_Items
@@ -44,7 +44,8 @@ class ScoreUtilsLoader:
     def _duplicate_mother_and_father(self, scoring_data):
 
         scoring_data = scoring_data.copy()
-        participant_types_df = pd.read_csv(participant_types_file_path).query(f"participant_type == 'Mother'")
+        participant_types_df = participant_types_file_path_df.copy()
+        participant_types_df = participant_types_df.query(f"participant_type == 'Mother'")
 
         for questionnaire, items in scoring_data.items():
             if questionnaire in participant_types_df.questionnaire:

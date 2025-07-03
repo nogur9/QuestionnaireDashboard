@@ -1,6 +1,6 @@
 import pandas as pd
 
-from paths import participant_types_file_path, scmci_path
+from paths import participant_types_file_path_df, scmci_path_df
 from source.questionnaire.question_columns_mapper import SimpleQuestionMap
 from source.scores.scores_loader import ScoresLoader
 from source.single_question.questions_loader import QuestionLoader
@@ -42,7 +42,7 @@ class QuestionnaireLoader:
         return questionnaires_list
 
     def _get_participants_type_map(self):
-        participant_types_df = pd.read_csv(participant_types_file_path)
+        participant_types_df = participant_types_file_path_df.copy()
         participant_types_map = {row.questionnaire: row.participant_type for _, row in participant_types_df.iterrows()}
         return participant_types_map
 
@@ -95,7 +95,7 @@ class QuestionnaireLoader:
             is_present = [(q in x) for q in questions_list]
             return all(is_present)
 
-        df = self.scmci_df = pd.read_excel(scmci_path)
+        df = self.scmci_df = scmci_path_df.copy()
         df['q_list'] = df['Variable Name'].str.split("\n")
         mask = df['q_list'].apply(get_questionnaire, args=[questions])
 

@@ -1,7 +1,7 @@
 import pandas as pd
 
+from paths import DataDictionary_path_df, exceptional_items_path_df
 from source.consts.enums import DataDictQuestionType
-from paths import DataDictionary_path, exceptional_items_path
 from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
@@ -25,8 +25,8 @@ class QuestionLoader:
 
     def __init__(self):
         self.questions_collection = []
-        self.df = pd.read_csv(DataDictionary_path)
-        self.exceptional_items = pd.read_excel(exceptional_items_path)
+        self.df = DataDictionary_path_df.copy()
+        self.exceptional_items = exceptional_items_path_df.copy()
 
     def load_questions(self):
         for _, row in self.df.iterrows():

@@ -1,10 +1,7 @@
 import pandas as pd
-from paths import redcap_column_names_path, qualtrics_column_names_path, imputation_map_path
+from paths import redcap_column_names_path_df, qualtrics_column_names_path_df, imputation_map_path_df
 from source.utils.transformation_rules import TRANSFORMATION_RULES
-import sys
-import os
 
-sys.path.insert(0, os.getcwd())
 
 
 
@@ -12,9 +9,9 @@ class QuestionsMappingCreator:
 
     def __init__(self):
 
-        self.redcap_df = pd.read_excel(redcap_column_names_path)
-        self.qualtrics_df = pd.read_excel(qualtrics_column_names_path)
-        self.imputation_map = pd.read_csv(imputation_map_path)
+        self.redcap_df = redcap_column_names_path_df.copy()
+        self.qualtrics_df = qualtrics_column_names_path_df.copy()
+        self.imputation_map = imputation_map_path_df.copy()
 
         self.redcap_df.drop_duplicates(inplace=True)
         self.qualtrics_df.drop_duplicates(inplace=True)
