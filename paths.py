@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 scmci_path_df = pd.read_excel(os.path.join(BASE_DIR, 'Data', "Depression_Clinic_SCMCI_study_measures_2024.xlsx"))
