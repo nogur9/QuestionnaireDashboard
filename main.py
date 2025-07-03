@@ -1,11 +1,6 @@
-import os
-import sys
 import streamlit as st
-
-
-sys.path.insert(0, os.getcwd())
-from source.data_etl.questionnaires_metadata.single_question.questions_loader import QuestionLoader
-from source.data_etl.questionnaires_metadata.questionnaire.questionnaire_loader import QuestionnaireLoader
+from source.questionnaire.questionnaire_loader import QuestionnaireLoader
+from source.single_question.questions_loader import QuestionLoader
 
 
 def explore_object(obj, name='object', level=0, max_depth=5):

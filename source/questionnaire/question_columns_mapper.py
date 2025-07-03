@@ -3,16 +3,23 @@ from source.utils.questions_mapping_creator import QuestionsMappingCreator
 
 class SimpleQuestionMap(QuestionsMappingCreator):
 
+    rename_map = {'mfq': 'mfq_short',
+                  'c_ssrs_stu': 'cssrs_t_stu',
+                  'c_ssrs_clin': 'cssrs_t_clin',
+                  'c_ssrs_intake': 'cssrs_intake',
+                  'c_ssrs': 'cssrs'}
 
-    def __init__(self, rename_mfq=True):
+
+    def __init__(self, rename=True):
         super().__init__()
         self.questions_info = []
-        self.rename_mfq = rename_mfq
+        self.rename = rename
 
     def load(self):
         results = self.run()
-        if self.rename_mfq:
-            results.loc[results['questionnaire'] == 'mfq', 'questionnaire'] = 'mfq_short'
+        if self.rename:
+            for current_name, correct_name in self.rename_map.items():
+                results.loc[results['questionnaire'] == current_name, 'questionnaire'] = correct_name
         return results
 
     def _setup_for_mapping_question(self, questionnaire, question):
@@ -37,4 +44,4 @@ class SimpleQuestionMap(QuestionsMappingCreator):
 
 if __name__ == "__main__":
     q_map = SimpleQuestionMap().run()
-    print(1)
+ #   print(1)

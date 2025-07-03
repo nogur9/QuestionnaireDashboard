@@ -8,4 +8,4 @@ imputation_map_path = r"Data\imputation_map.csv"
 
 
 exceptional_items_path = r"Data\questions_excluded_from_scores_calculation.xlsx"
-participant_types_file_path = r"Data\participant_types.csv"
+participant_types_file_path = "Data\participant_types.csv"

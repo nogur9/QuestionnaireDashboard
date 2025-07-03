@@ -100,3 +100,4 @@ class QuestionLoader:
 if __name__ == "__main__":
     ql = QuestionLoader()
     results = ql.load_questions()
+    print(1)
