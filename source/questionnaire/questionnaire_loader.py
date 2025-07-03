@@ -5,6 +5,10 @@ from source.questionnaire.question_columns_mapper import SimpleQuestionMap
 from source.scores.scores_loader import ScoresLoader
 from source.single_question.questions_loader import QuestionLoader
 from source.utils.info_objects import QuestionnairesList, QuestionnaireInfo
+import sys
+import os
+
+sys.path.insert(0, os.getcwd())
 
 
 class QuestionnaireLoader:

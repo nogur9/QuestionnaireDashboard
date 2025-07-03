@@ -6,6 +6,10 @@ from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
 from source.utils.timestamp_creator import TimestampCreator
+import sys
+import os
+
+sys.path.insert(0, os.getcwd())
 
 # NOTE: Ensure pandas and numpy are installed in your environment.
 

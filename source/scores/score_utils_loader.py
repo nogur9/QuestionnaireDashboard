@@ -5,6 +5,10 @@ from source.consts.scores.clusters import Clusters
 from source.consts.scores.questionnaire_columns import Scores_Columns, DEFAULT
 from source.consts.scores.reverse_items import Reverse_Items
 from source.single_question.questions_loader import QuestionLoader
+import sys
+import os
+
+sys.path.insert(0, os.getcwd())
 
 
 class ScoreUtilsLoader:

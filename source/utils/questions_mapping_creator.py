@@ -1,6 +1,10 @@
 import pandas as pd
 from paths import redcap_column_names_path, qualtrics_column_names_path, imputation_map_path
 from source.utils.transformation_rules import TRANSFORMATION_RULES
+import sys
+import os
+
+sys.path.insert(0, os.getcwd())
 
 
 
