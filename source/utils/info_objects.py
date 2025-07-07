@@ -35,6 +35,7 @@ class QuestionInfo:
     question_text: str
     question_type: QuestionType
     questionnaire_name: str
+    questionnaire_alternative_name: str = "",
     is_timestamp: bool = False
     is_exceptional_item: bool = False
     ancestor: Optional[str] = None  # if type = checkbox
