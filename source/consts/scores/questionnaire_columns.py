@@ -194,7 +194,7 @@ Scores_Columns = {
     'wai_immirisk_clin': DEFAULT,
 
     # normal
-    'mfq_short': [
+    'mfq': [
     'mfq_1',
     'mfq_2',
     'mfq_5',

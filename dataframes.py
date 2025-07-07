@@ -13,4 +13,4 @@ imputation_map_path_df = pd.read_csv(os.path.join(BASE_DIR, 'Data',"imputation_m
 
 exceptional_items_path_df = pd.read_excel(os.path.join(BASE_DIR, 'Data',"questions_excluded_from_scores_calculation.xlsx"))
 participant_types_file_path_df = pd.read_csv(os.path.join(BASE_DIR, 'Data',"participant_types.csv"))
-questionnaires_with_wrong_names_path_df = pd.read_excel(os.path.join(BASE_DIR, 'Data',"questionnaires_with_wrong_names.xlsx"))
+questionnaires_alternative_names_path_df = pd.read_excel(os.path.join(BASE_DIR, 'Data', "questionnaires_alternative_names.xlsx"))

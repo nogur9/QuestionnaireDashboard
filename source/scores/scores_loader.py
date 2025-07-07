@@ -20,8 +20,8 @@ class ScoresLoader:
         return [
 
         ScoringInfo(
-            questionnaire_name = 'mfq_short',
-            columns = self.scores_utils.scores_columns['mfq_short'], # These questions don't participate in the scores
+            questionnaire_name = 'mfq',
+            columns = self.scores_utils.scores_columns['mfq'], # These questions don't participate in the scores
                                                                # 34, 35, 36, 37
             aggregation_function = ScoringMethod.SUM,
             reversed_columns = [],

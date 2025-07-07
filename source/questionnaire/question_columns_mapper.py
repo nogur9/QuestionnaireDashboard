@@ -1,26 +1,15 @@
-from dataframes import questionnaires_with_wrong_names_path_df
 from source.utils.questions_mapping_creator import QuestionsMappingCreator
 
 
 class SimpleQuestionMap(QuestionsMappingCreator):
 
-    rename_map = {}
-
-
-    def __init__(self, rename=True):
+    def __init__(self):
 
         super().__init__()
         self.questions_info = []
-        self.rename = rename
-
-        self.rename_map = \
-            {i['questionnaire']: i['new_name'] for _, i in questionnaires_with_wrong_names_path_df.iterrows()}
 
     def load(self):
         results = self.run()
-        if self.rename:
-            for current_name, correct_name in self.rename_map.items():
-                results.loc[results['questionnaire'] == current_name, 'questionnaire'] = correct_name
         return results
 
     def _setup_for_mapping_question(self, questionnaire, question):

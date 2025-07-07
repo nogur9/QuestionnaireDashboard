@@ -4,6 +4,7 @@ from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
 from source.utils.timestamp_creator import TimestampCreator
+from dataframes import questionnaires_alternative_names_path_df
 
 
 class QuestionLoader:
@@ -20,6 +21,10 @@ class QuestionLoader:
         self.questions_collection = []
         self.df = DataDictionary_path_df.copy()
         self.exceptional_items = exceptional_items_path_df.copy()
+
+        self.alternative_names = \
+            {i['questionnaire']: i['alternative_name'] for _, i in questionnaires_alternative_names_path_df.iterrows()}
+
 
     def load_questions(self):
         for _, row in self.df.iterrows():
@@ -48,6 +53,7 @@ class QuestionLoader:
             "variable_name": row[self.name_col],
             "question_text": row[self.text_col],
             "questionnaire_name": row[self.questionnaire_col],
+            "questionnaire_alternative_name": self.alternative_names[row[self.questionnaire_col]],
             "branching_logic": row[self.branching_col],
             "is_timestamp": TimestampCreator.is_datetime_column(row[self.name_col]),
             'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist()
