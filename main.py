@@ -1,51 +1,77 @@
 import streamlit as st
 from source.questionnaire.questionnaire_loader import QuestionnaireLoader
+from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
+import numpy as np
+from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
 
 sys.path.insert(0, os.getcwd())
 
-def display_metadata(metadata):
-    """Display questionnaire metadata as key-value pairs."""
-    if not metadata:
-        st.info("No metadata available.")
+hidden_attributes = {
+    QuestionnaireInfo: ['scoring_info',],
+    QuestionInfo:['questionnaire_name', 'questionnaire_alternative_name'],
+    QualtricsAgeQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
+    ScoringInfo:['questionnaire_name', 'need_clarification']
+
+}
+
+def display_metadata(questionnaire_data: dict):
+    # Display questionnaire metadata as key-value pairs.
+    if not questionnaire_data:
+        st.info("No questionnaire metadata available.")
         return
-    for key, value in metadata.items():
+    for key, value in questionnaire_data.items():
+        if value is None:
+            continue
+        elif type(value) == list:
+            if len(value) == 0:
+                continue
+
         st.markdown(f"**{key}:** {value}")
 
-def display_scoring(scoring_info):
-    """Display scoring info in a structured way."""
+def display_scoring(scoring_data: dict):
+    # Display scoring info in a structured way
     if not scoring_info:
         st.info("No scoring information available.")
         return
-    if isinstance(scoring_info, dict):
-        for key, value in scoring_info.items():
+
+    for key, value in scoring_data.items():
+
+        if key == 'aggregation_function':
+            st.markdown(f"**{key}:** {repr(value)}")
+        elif len(value) == 0:
+            continue
+        else:
             with st.expander(f"{key}"):
-                st.write("meow")
-    else:
-        st.write(scoring_info)
+                if isinstance(value, dict):
+                    for cluster, items in value.items():
+                        st.markdown(f"**{cluster}:** {repr(value)}")
+                else:
+                    st.markdown(f"**{key}:** {repr(value)}")
 
-def display_question(question):
-    """Display question details in an expander."""
-    if hasattr(question, '__dict__'):
-        attrs = {k: v for k, v in vars(question).items() if not k.startswith('__')}
-    elif isinstance(question, dict):
-        attrs = question
-    else:
-        st.write(question)
-        return
-    key_info = attrs.get('text', None) or attrs.get('name', None) or str(question)
-    with st.expander(f"{attrs.get('name', 'Question')} - {key_info}"):
-        for k, v in attrs.items():
-            st.markdown(f"**{k}:** {v}")
+def display_question(question_data: dict):
+    # Display question details in an expander.
+    key_info = question_data['variable_name']
+    with st.expander(f"{question_data.get('name', 'Question')} - {key_info}"):
+        for k, v in question_data.items():
+            if k == 'variable_name':
+                continue
+            elif k in ['ancestor', 'choices', 'branching_logic']:
+                if (v is None) or (type(v) == float): # float -> np.nan
+                    continue
+            if isinstance(v, dict):
+                for cluster, items in v.items():
+                    st.markdown(f"**{cluster}:** {items}")
+            else:
+                st.markdown(f"**{k}:** {repr(v)}")
 
-def get_metadata(obj):
-    """Extract metadata from questionnaire object, fallback to __dict__."""
-    if hasattr(obj, 'metadata'):
-        return getattr(obj, 'metadata')
-    elif hasattr(obj, '__dict__'):
-        return {k: v for k, v in vars(obj).items() if not k.startswith('__') and k != 'scoring_info'}
+def get_attributes(obj):
+    # Extract metadata from questionnaire object, fallback to __dict__.
+    if hasattr(obj, '__dict__'):
+        ha = hidden_attributes[type(obj)]
+        return {k: v for k, v in vars(obj).items() if not k.startswith('__') and k not in ha}
     return {}
 
 def get_scoring(obj):
@@ -70,18 +96,22 @@ if selected_q is None:
 else:
     tabs = st.tabs(["Metadata", "Scoring", "Questions"])
     with tabs[0]:
-        st.subheader("📋 Metadata")
-        metadata = get_metadata(selected_q)
-        display_metadata(metadata)
+        st.subheader("📋 Questionnaire Metadata")
+        questionnaire_metadata = get_attributes(selected_q)
+        display_metadata(questionnaire_metadata)
+
     with tabs[1]:
         st.subheader("🧮 Scoring Method")
         scoring_info = get_scoring(selected_q)
-        display_scoring(scoring_info)
+        scoring_metadata = get_attributes(scoring_info)
+        display_scoring(scoring_metadata)
+
     with tabs[2]:
         st.subheader("❓ Questions")
         q_list = questions.get_by_questionnaire(q_name)
         if not q_list:
             st.info("No questions found for this questionnaire.")
         else:
-            for q in q_list:
-                display_question(q)
+            for question in q_list:
+                question_metadata = get_attributes(question)
+                display_question(question_metadata)

@@ -54,9 +54,9 @@ class QuestionLoader:
             "question_text": row[self.text_col],
             "questionnaire_name": self.alternative_names.get(row[self.questionnaire_col], row[self.questionnaire_col]), # get the suffix parallel, or return that value
             "questionnaire_alternative_name": row[self.questionnaire_col],
-            "branching_logic": row[self.branching_col],
             "is_timestamp": TimestampCreator.is_datetime_column(row[self.name_col]),
-            'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist()
+            'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist(),
+            "branching_logic": row[self.branching_col],
         }
         return question_data
 

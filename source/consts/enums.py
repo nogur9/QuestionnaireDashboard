@@ -7,10 +7,21 @@ from source.utils.textual_question_type import TextQuestionType
 
 
 class ScoringMethod(Enum):
-    SUM = 'sum'
-    AVERAGE = 'average'
+    SUM = 'Sum'
+    AVERAGE = 'Average'
     SWAN_SCORING = 'swan_scoring'
     SPC_CLIN_SCORING = 'spc_clinician_scoring'
+
+
+    def __init__(self, label):
+        self.label = label
+
+
+    def __repr__(self):
+        if self.label in ['swan_scoring', 'spc_clinician_scoring']:
+            return 'Unique Scoring Method'
+
+        return self.label
 
 class QuestionType(Enum):
     Binary = ('Binary', BinaryValidator, False)

@@ -9,8 +9,8 @@ from source.consts.enums import QuestionType, ScoringMethod
 class ScoringInfo:
     """Metadata for scoring logic of a questionnaire."""
     questionnaire_name: str
-    columns: List
     aggregation_function: ScoringMethod
+    columns: List
     reversed_columns: List[str]
     clusters: Optional[Dict[str, List[str]]]
     need_clarification: bool
@@ -74,11 +74,13 @@ class QuestionnaireInfo:
     exceptional_items: List[str] = field(default_factory=list)
     timestamp_items: List[str] = field(default_factory=list)
     scoring_info:ScoringInfo = None
+    name_in_database: str = None,
     Abbreviated_Name:Optional[str] = None
     Full_Name:Optional[str] = None
     Description:Optional[str] = None
     Reference:Optional[str] = None
     Scoring_Instructions:Optional[str] = None
+
     def __repr__(self):
         return self.name
 
@@ -89,10 +91,6 @@ class QuestionnairesList:
 
     def get_by_name(self, name: str) -> Optional[QuestionnaireInfo]:
         return next((q for q in self.questionnaires if q.name == name), None)
-
-    def get_questions(self, questionnaire_name: str) -> List[QuestionInfo]:
-        q = self.get_by_name(questionnaire_name)
-        return q.questions_info if q else []
 
     def get_all_questionnaires(self) -> List[str]:
         all_questionnaires = [q.name for q in self.questionnaires]

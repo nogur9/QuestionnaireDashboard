@@ -47,9 +47,10 @@ class QuestionnaireLoader:
         return participant_types_map
 
     def _create_questionnaire_info_entry(self, questionnaire_name):
+        questions = self.questions_list.get_by_questionnaire(questionnaire_name)
         items = self.questions_list.get_by_questionnaire(questionnaire_name, get_q_names=True)
-        exceptional_items = [item.variable_name for item in self.questions_list.get_by_questionnaire(questionnaire_name) if item.is_exceptional_item]
-        timestamp_items = [item.variable_name for item in self.questions_list.get_by_questionnaire(questionnaire_name) if item.is_timestamp]
+        exceptional_items = [item.variable_name for item in questions if item.is_exceptional_item]
+        timestamp_items = [item.variable_name for item in questions if item.is_timestamp]
         research_data = self._get_data_from_scmci(items)
 
         basic_info = {
@@ -60,6 +61,9 @@ class QuestionnaireLoader:
         'participant_type': self.participant_types_map.get(questionnaire_name),
         'scoring_info': self.scores_list.get_by_questionnaire(questionnaire_name),
         }
+
+        if questions:
+            basic_info['name_in_database'] = questions[0].questionnaire_alternative_name
         if research_data is not None:
             questionnaire_info = QuestionnaireInfo(
                 **basic_info, **research_data
