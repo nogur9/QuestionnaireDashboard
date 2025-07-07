@@ -62,7 +62,7 @@ def display_question(question_data: dict):
                 if (v is None) or (type(v) == float): # float -> np.nan
                     continue
             if isinstance(v, dict):
-                st.markdown(f"*{k}:*")
+                st.markdown(f"***{k}:***")
                 for choice, items in v.items():
                     st.markdown(f"    **{choice}:** {repr(items)}")
             else:
