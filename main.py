@@ -6,45 +6,82 @@ import os
 
 sys.path.insert(0, os.getcwd())
 
-def explore_object(obj, name='object', level=0, max_depth=5):
-    """Recursively explore object attributes with collapsible sections."""
-    if level > max_depth:
-        st.markdown(f"{' ' * (level * 4)}- `{name}`: 🔁 Max depth reached")
+def display_metadata(metadata):
+    """Display questionnaire metadata as key-value pairs."""
+    if not metadata:
+        st.info("No metadata available.")
         return
+    for key, value in metadata.items():
+        st.markdown(f"**{key}:** {value}")
 
-    if hasattr(obj, '__dict__'):
-        with st.expander(f"{' ' * level * 2}🔹 {repr(obj)}"):
-            attributes = [attr for attr in dir(obj) if not attr.startswith('__')]
-            if not attributes:
-                st.write("No public attributes.")
-            for attr in attributes:
-                try:
-                    value = getattr(obj, attr)
-
-                    st.markdown(f"📄 `{attr}`: \n`{repr(value)}`")
-                except Exception as e:
-                    st.markdown(f"⚠️ `{attr}`: Error - {e}")
+def display_scoring(scoring_info):
+    """Display scoring info in a structured way."""
+    if not scoring_info:
+        st.info("No scoring information available.")
+        return
+    if isinstance(scoring_info, dict):
+        for key, value in scoring_info.items():
+            with st.expander(f"{key}"):
+                st.write(value)
     else:
-        st.markdown(f"{' ' * (level * 4)}- `{name}`: `{repr(obj)}`")
+        st.write(scoring_info)
 
+def display_question(question):
+    """Display question details in an expander."""
+    if hasattr(question, '__dict__'):
+        attrs = {k: v for k, v in vars(question).items() if not k.startswith('__')}
+    elif isinstance(question, dict):
+        attrs = question
+    else:
+        st.write(question)
+        return
+    key_info = attrs.get('text', None) or attrs.get('name', None) or str(question)
+    with st.expander(f"{attrs.get('name', 'Question')} - {key_info}"):
+        for k, v in attrs.items():
+            st.markdown(f"**{k}:** {v}")
 
-st.title("🔍 Questionnaires Explorer")
+def get_metadata(obj):
+    """Extract metadata from questionnaire object, fallback to __dict__."""
+    if hasattr(obj, 'metadata'):
+        return getattr(obj, 'metadata')
+    elif hasattr(obj, '__dict__'):
+        return {k: v for k, v in vars(obj).items() if not k.startswith('__') and k != 'scoring_info'}
+    return {}
 
-# Load questionnaires and questions
+def get_scoring(obj):
+    """Extract scoring info from questionnaire object."""
+    return getattr(obj, 'scoring_info', None)
+
+st.set_page_config(page_title="Questionnaire Metadata Explorer", layout="wide")
+st.title("🧠 Questionnaire Metadata Explorer")
+
+# Sidebar: Select questionnaire
+st.sidebar.header("Select Questionnaire")
 questionnaires = QuestionnaireLoader().load_questionnaires()
 question_names = questionnaires.get_all_questionnaires()
 questions = QuestionLoader().load_questions()
 
-# Select questionnaire with search
-q_name = st.selectbox("Select a questionnaire", question_names, index=0)
+q_name = st.sidebar.selectbox("Questionnaire", question_names, index=0)
+selected_q = questionnaires.get_by_name(q_name)
 
-# Display selected questionnaire
-st.header(f"Questionnaire - {q_name}")
-explore_object(questionnaires.get_by_name(q_name))
-
-st.header("Score")
-explore_object(questionnaires.get_by_name(q_name).scoring_info)
-
-st.header("Questions")
-for q in questions.get_by_questionnaire(q_name):
-    explore_object(q)
+# Tabs for Metadata, Scoring, Questions
+if selected_q is None:
+    st.error(f"No data found for questionnaire: {q_name}")
+else:
+    tabs = st.tabs(["Metadata", "Scoring", "Questions"])
+    with tabs[0]:
+        st.subheader("📋 Metadata")
+        metadata = get_metadata(selected_q)
+        display_metadata(metadata)
+    with tabs[1]:
+        st.subheader("🧮 Scoring Method")
+        scoring_info = get_scoring(selected_q)
+        display_scoring(scoring_info)
+    with tabs[2]:
+        st.subheader("❓ Questions")
+        q_list = questions.get_by_questionnaire(q_name)
+        if not q_list:
+            st.info("No questions found for this questionnaire.")
+        else:
+            for q in q_list:
+                display_question(q)

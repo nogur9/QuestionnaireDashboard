@@ -1,6 +1,6 @@
 import pandas as pd
 
-from paths import participant_types_file_path_df, scmci_path_df
+from dataframes import participant_types_file_path_df, scmci_path_df
 from source.questionnaire.question_columns_mapper import SimpleQuestionMap
 from source.scores.scores_loader import ScoresLoader
 from source.single_question.questions_loader import QuestionLoader
@@ -114,3 +114,4 @@ class QuestionnaireLoader:
 if __name__ == "__main__":
     ql = QuestionnaireLoader()
     results = ql.load_questionnaires()
+    print(1)

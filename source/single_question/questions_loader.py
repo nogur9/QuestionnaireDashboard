@@ -1,4 +1,4 @@
-from paths import DataDictionary_path_df, exceptional_items_path_df
+from dataframes import DataDictionary_path_df, exceptional_items_path_df
 from source.consts.enums import DataDictQuestionType
 from source.single_question.qualtrics_questions import QualtricsAgeQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo

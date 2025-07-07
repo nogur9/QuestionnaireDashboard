@@ -1,19 +1,20 @@
+from dataframes import questionnires_with_wrong_names_path_df
 from source.utils.questions_mapping_creator import QuestionsMappingCreator
 
 
 class SimpleQuestionMap(QuestionsMappingCreator):
 
-    rename_map = {'mfq': 'mfq_short',
-                  'c_ssrs_stu': 'cssrs_t_stu',
-                  'c_ssrs_clin': 'cssrs_t_clin',
-                  'c_ssrs_intake': 'cssrs_intake',
-                  'c_ssrs': 'cssrs'}
+    rename_map = {}
 
 
     def __init__(self, rename=True):
+
         super().__init__()
         self.questions_info = []
         self.rename = rename
+
+        self.rename_map = \
+            {i['questionnaire']: i['new_name'] for _, i in questionnires_with_wrong_names_path_df.iterrows()}
 
     def load(self):
         results = self.run()
@@ -44,4 +45,4 @@ class SimpleQuestionMap(QuestionsMappingCreator):
 
 if __name__ == "__main__":
     q_map = SimpleQuestionMap().run()
- #   print(1)
+    print(1)

@@ -1,5 +1,5 @@
 import pandas as pd
-from paths import redcap_column_names_path_df, qualtrics_column_names_path_df, imputation_map_path_df
+from dataframes import redcap_column_names_path_df, qualtrics_column_names_path_df, imputation_map_path_df
 from source.utils.transformation_rules import TRANSFORMATION_RULES
 
 
