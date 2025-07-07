@@ -47,7 +47,7 @@ def display_scoring(scoring_data: dict):
             with st.expander(f"{key}"):
                 if isinstance(value, dict):
                     for cluster, items in value.items():
-                        st.markdown(f"**{cluster}:** {repr(value)}")
+                        st.markdown(f"**{cluster}:** {repr(items)}")
                 else:
                     st.markdown(f"**{key}:** {repr(value)}")
 
@@ -62,8 +62,9 @@ def display_question(question_data: dict):
                 if (v is None) or (type(v) == float): # float -> np.nan
                     continue
             if isinstance(v, dict):
-                for cluster, items in v.items():
-                    st.markdown(f"**{cluster}:** {items}")
+                st.markdown(f"*{k}:*")
+                for choice, items in v.items():
+                    st.markdown(f"    **{choice}:** {repr(items)}")
             else:
                 st.markdown(f"**{k}:** {repr(v)}")
 
