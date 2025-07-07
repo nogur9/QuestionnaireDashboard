@@ -22,7 +22,11 @@ def display_scoring(scoring_info):
     if isinstance(scoring_info, dict):
         for key, value in scoring_info.items():
             with st.expander(f"{key}"):
-                st.write(value)
+                if type(value) == dict:
+                    for cluster, items in value.items():
+                        st.markdown(f"**{cluster}:** {items}")
+                else:
+                    st.write(value)
     else:
         st.write(scoring_info)
 
