@@ -37,7 +37,7 @@ class ScoresLoader:
             need_clarification = False,
         ),
         ScoringInfo(
-            questionnaire_name = 'sqd',
+            questionnaire_name = 'sdq',
             columns=self.scores_utils.scores_columns['sdq'],
             aggregation_function = ScoringMethod.SUM,
             reversed_columns = self.scores_utils.reverse_items['sdq'],
