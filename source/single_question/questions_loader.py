@@ -50,10 +50,10 @@ class QuestionLoader:
 
     def _extract_basic_info(self, row):
         question_data = {
-            "variable_name": row[self.name_col],
+            "variable_name": self.alternative_names.get(row[self.questionnaire_col], row[self.questionnaire_col]), # get the suffix parallel, or return that value
             "question_text": row[self.text_col],
             "questionnaire_name": row[self.questionnaire_col],
-            "questionnaire_alternative_name": self.alternative_names[row[self.questionnaire_col]],
+            "questionnaire_alternative_name": row[self.questionnaire_col],
             "branching_logic": row[self.branching_col],
             "is_timestamp": TimestampCreator.is_datetime_column(row[self.name_col]),
             'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist()
