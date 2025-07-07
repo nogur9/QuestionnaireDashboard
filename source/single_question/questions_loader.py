@@ -23,7 +23,7 @@ class QuestionLoader:
         self.exceptional_items = exceptional_items_path_df.copy()
 
         self.alternative_names = \
-            {i['questionnaire']: i['alternative_name'] for _, i in questionnaires_alternative_names_path_df.iterrows()}
+            {i['alternative_name']: i['questionnaire']  for _, i in questionnaires_alternative_names_path_df.iterrows()}
 
 
     def load_questions(self):
