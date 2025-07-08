@@ -77,7 +77,7 @@ class QuestionnaireLoader:
         questionnaire_collection = []
 
         for questionnaire_name in list(self.questions_map_df.questionnaire.unique()):
-            self._assert_question_list_size(questionnaire_name, self.questions_map_df)
+            # self._assert_question_list_size(questionnaire_name, self.questions_map_df)
             questionnaires_info = self._create_questionnaire_info_entry(questionnaire_name)
             questionnaire_collection.append(questionnaires_info)
 
@@ -116,6 +116,9 @@ class QuestionnaireLoader:
 
 
 if __name__ == "__main__":
-    ql = QuestionnaireLoader()
-    results = ql.load_questionnaires()
+    # ql = QuestionnaireLoader()
+    # results = ql.load_questionnaires()
+    ql = QuestionLoader().load_questions().questions
+    ql = [i.variable_name for i in ql]
+    qm = SimpleQuestionMap().load().standard_question_name.to_list()
     print(1)

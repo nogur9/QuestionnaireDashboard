@@ -63,6 +63,12 @@ class QuestionsList:
     def search_by_label(self, word: str) -> List[QuestionInfo]:
         return [q for q in self.questions if word.lower() in q.question_text.lower()]
 
+    def append(self, question_info: QuestionInfo):
+        self.questions.append(question_info)
+
+    def get_question_names(self):
+        return [i.variable_name for i in self.questions]
+
 
 
 @dataclass

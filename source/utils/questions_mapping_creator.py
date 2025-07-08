@@ -1,5 +1,6 @@
 import pandas as pd
-from dataframes import redcap_column_names_path_df, qualtrics_column_names_path_df, imputation_map_path_df
+from dataframes import (redcap_column_names_path_df, qualtrics_column_names_path_df, imputation_map_path_df,
+                        invalid_columns_path_df)
 from source.utils.transformation_rules import TRANSFORMATION_RULES
 
 
@@ -12,6 +13,8 @@ class QuestionsMappingCreator:
         self.redcap_df = redcap_column_names_path_df.copy()
         self.qualtrics_df = qualtrics_column_names_path_df.copy()
         self.imputation_map = imputation_map_path_df.copy()
+
+        self.invalid_columns = invalid_columns_path_df.column_name.to_list()
 
         self.redcap_df.drop_duplicates(inplace=True)
         self.qualtrics_df.drop_duplicates(inplace=True)
@@ -31,16 +34,18 @@ class QuestionsMappingCreator:
 
             if transformation_rule in ['DEFAULT', 'EXTRA QUESTIONS IN REDCAP', 'REDCAP_ONLY']:
                 for question in self.redcap_questionnaires[questionnaire]:
-                    new_map = self._setup_for_mapping_question(questionnaire, question)
-                    new_map = self._add_redcap_question(question, questionnaire, transformation_rule, new_map)
-                    column_names_mapping.append(new_map)
+                    if question not in self.invalid_columns:
+                        new_map = self._setup_for_mapping_question(questionnaire, question)
+                        new_map = self._add_redcap_question(question, questionnaire, transformation_rule, new_map)
+                        column_names_mapping.append(new_map)
 
 
             elif transformation_rule == 'EXTRA QUESTIONS IN QUALTRICS':
                 for question in self.qualtrics_questionnaires[questionnaire]:
-                    new_map = self._setup_for_mapping_question(questionnaire, question)
-                    new_map = self._add_qualtrics_question(question, questionnaire, new_map)
-                    column_names_mapping.append(new_map)
+                    if question not in self.invalid_columns:
+                        new_map = self._setup_for_mapping_question(questionnaire, question)
+                        new_map = self._add_qualtrics_question(question, questionnaire, new_map)
+                        column_names_mapping.append(new_map)
             else:
                 raise ValueError
         if save_map:

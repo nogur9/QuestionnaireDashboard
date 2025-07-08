@@ -1,6 +1,9 @@
+from sphinx.builders.gettext import timestamp
+
 from dataframes import DataDictionary_path_df, exceptional_items_path_df
 from source.consts.enums import DataDictQuestionType
-from source.single_question.qualtrics_questions import QualtricsAgeQuestion
+from source.questionnaire.question_columns_mapper import SimpleQuestionMap
+from source.single_question.missing_questions import QualtricsAgeQuestion, RedcapEventNameQuestion, TimestampQuestion
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
 from source.utils.timestamp_creator import TimestampCreator
@@ -34,8 +37,8 @@ class QuestionLoader:
             else:
                 self.questions_collection.append(QuestionInfo(**question_data))
 
-        self._add_missing_questions()
         questions_list = QuestionsList(self.questions_collection)
+        self._add_missing_questions(questions_list)
 
         return questions_list
 
@@ -49,14 +52,15 @@ class QuestionLoader:
 
 
     def _extract_basic_info(self, row):
+        questionnaire_name = row[self.questionnaire_col]
         question_data = {
             "variable_name": row[self.name_col],
             "question_text": row[self.text_col],
-            "questionnaire_name": self.alternative_names.get(row[self.questionnaire_col], row[self.questionnaire_col]), # get the suffix parallel, or return that value
-            "questionnaire_alternative_name": row[self.questionnaire_col],
+            "questionnaire_alternative_name": questionnaire_name,
             "is_timestamp": TimestampCreator.is_datetime_column(row[self.name_col]),
             'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist(),
             "branching_logic": row[self.branching_col],
+            "questionnaire_name": self.alternative_names.get(questionnaire_name, questionnaire_name) # get the database-name parallel, or return same value
         }
         return question_data
 
@@ -68,8 +72,27 @@ class QuestionLoader:
         return question_type, is_checkbox
 
 
-    def _add_missing_questions(self):
-        self.questions_collection.append(QualtricsAgeQuestion())
+    def _add_missing_questions(self, questions_list: QuestionsList):
+
+
+        # add qualtrics question
+        questions_list.append(QualtricsAgeQuestion())
+
+        # add redcap_event_name
+        questions_list.append(RedcapEventNameQuestion())
+
+        questions_map = SimpleQuestionMap().load()
+        missing_questions = [i for i in questions_map.standard_question_name.to_list() \
+                             if i not in questions_list.get_question_names()]
+        for q in missing_questions:
+            if q.endswith('_timestamp'):
+                questionnaire = questions_map.query(f"standard_question_name == '{q}'")['questionnaire'].iloc[0]
+                timestamp_q = TimestampQuestion(variable_name=q, questionnaire=questionnaire)
+                questions_list.append(timestamp_q)
+
+            elif q != 'redcap_event_name':
+                print(f"missing question {q}")
+
 
 
     def _expend_checkbox_questions(self, row, question_data):
@@ -78,8 +101,8 @@ class QuestionLoader:
 
         for k, v in choices_dict.items():
             choice_question_data = question_data.copy()
-            choice_question_data['variable_name'] = f"{question_data['ancestor']}_{k}"
-            choice_question_data['question_text'] = f"{question_data['question_text']}_{v}"
+            choice_question_data['variable_name'] = f"{question_data['ancestor']}___{k}"
+            choice_question_data['question_text'] = f"{question_data['question_text']} - {v}"
             one_hot_encodings.append(QuestionInfo(**choice_question_data))
 
         return one_hot_encodings

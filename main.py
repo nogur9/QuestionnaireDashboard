@@ -1,10 +1,9 @@
 import streamlit as st
 from source.questionnaire.questionnaire_loader import QuestionnaireLoader
-from source.single_question.qualtrics_questions import QualtricsAgeQuestion
+from source.single_question.missing_questions import QualtricsAgeQuestion
 from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
-import numpy as np
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
 
 sys.path.insert(0, os.getcwd())
