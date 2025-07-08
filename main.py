@@ -1,6 +1,6 @@
 import streamlit as st
 from source.questionnaire.questionnaire_loader import QuestionnaireLoader
-from source.single_question.missing_questions import QualtricsAgeQuestion
+from source.single_question.missing_questions import QualtricsAgeQuestion, RedcapEventNameQuestion, TimestampQuestion
 from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
@@ -11,8 +11,10 @@ sys.path.insert(0, os.getcwd())
 hidden_attributes = {
     QuestionnaireInfo: ['scoring_info',],
     QuestionInfo:['questionnaire_name', 'questionnaire_alternative_name'],
+    ScoringInfo:['questionnaire_name', 'need_clarification'],
     QualtricsAgeQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
-    ScoringInfo:['questionnaire_name', 'need_clarification']
+    RedcapEventNameQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
+    TimestampQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
 
 }
 
