@@ -1,5 +1,3 @@
-from sphinx.builders.gettext import timestamp
-
 from dataframes import DataDictionary_path_df, exceptional_items_path_df
 from source.consts.enums import DataDictQuestionType
 from source.questionnaire.question_columns_mapper import SimpleQuestionMap
