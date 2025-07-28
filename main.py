@@ -5,6 +5,8 @@ from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 
 sys.path.insert(0, os.getcwd())
 
@@ -80,16 +82,49 @@ def get_scoring(obj):
     """Extract scoring info from questionnaire object."""
     return getattr(obj, 'scoring_info', None)
 
+# Define semantic search function
+def search_questionnaires(query, desc_embeddings,
+                          questionnaire_desc, top_k=3):
+    query_embedding = model.encode(query, convert_to_tensor=True)
+    similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
+    top_indices = similarities.argsort()[-top_k:][::-1]
+    return questionnaire_desc.iloc[top_indices]['name']
+
+
 st.set_page_config(page_title="Questionnaire Metadata Explorer", layout="wide")
 st.title("🧠 Questionnaire Metadata Explorer")
 
+# set RAG search-bar
+
 # Sidebar: Select questionnaire
-st.sidebar.header("Select Questionnaire")
+
+# --- Sidebar: Search and selection ---
+st.sidebar.header("Search or Select Questionnaire")
 questionnaires = QuestionnaireLoader().load_questionnaires()
-question_names = questionnaires.get_all_questionnaires()
+questionnaire_names = questionnaires.get_all_questionnaires()
+questionnaire_desc = questionnaires.get_questionnaires_desc()
 questions = QuestionLoader().load_questions()
 
-q_name = st.sidebar.selectbox("Questionnaire", question_names, index=0)
+# Text input for semantic search
+# Prepare sentence embeddings
+model = SentenceTransformer("all-MiniLM-L6-v2")
+desc_embeddings = model.encode(questionnaire_desc['Description'].to_list(),
+                               convert_to_tensor=True)
+
+
+query = st.sidebar.text_input("Search by topic (e.g., 'anxiety', 'emotion')")
+
+if query:
+    results = search_questionnaires(query,
+                            desc_embeddings, questionnaire_desc)
+    top_names = results.tolist()
+    st.sidebar.markdown("**Top Matches:**")
+else:
+    top_names = questionnaire_names
+
+
+# Questionnaire selection
+q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
 selected_q = questionnaires.get_by_name(q_name)
 
 # Tabs for Metadata, Scoring, Questions

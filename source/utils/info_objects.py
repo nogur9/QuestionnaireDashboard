@@ -1,5 +1,8 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any
+
+import pandas as pd
+
 from source.consts.enums import QuestionType, ScoringMethod
 
 
@@ -102,3 +105,7 @@ class QuestionnairesList:
         all_questionnaires = [q.name for q in self.questionnaires]
         return all_questionnaires
 
+    def get_questionnaires_desc(self):
+        qs = [{'name': q.name, 'Description':q.Description} for \
+         q in self.questionnaires if q.Description is not None]
+        return pd.DataFrame(qs)
