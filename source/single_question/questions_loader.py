@@ -50,7 +50,8 @@ class QuestionLoader:
 
 
     def _extract_basic_info(self, row):
-        questionnaire_name = row[self.questionnaire_col]
+        questionnaire_name = self._split_questionnaires(row)
+
         question_data = {
             "variable_name": row[self.name_col],
             "question_text": row[self.text_col],
@@ -61,6 +62,21 @@ class QuestionLoader:
             "questionnaire_name": self.alternative_names.get(questionnaire_name, questionnaire_name) # get the database-name parallel, or return same value
         }
         return question_data
+
+    def _split_questionnaires(self, row):
+        current = "immirisk_adolescents_mast_athens"
+        default = "MAST"
+        other = "ATHENS"
+        print(row)
+        questionnaire_name = row[self.questionnaire_col]
+        if questionnaire_name == current:
+            if row[self.name_col].startswith(other.lower()):
+                return other
+            else:
+                return default
+        else:
+            return questionnaire_name
+
 
 
     def _get_question_type(self, row):

@@ -5,8 +5,9 @@ from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
-from sentence_transformers import SentenceTransformer
+#from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+import pickle
 
 sys.path.insert(0, os.getcwd())
 
@@ -85,10 +86,20 @@ def get_scoring(obj):
 # Define semantic search function
 def search_questionnaires(query, desc_embeddings,
                           questionnaire_desc, top_k=3):
-    query_embedding = model.encode(query, convert_to_tensor=True)
+    # query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
+    # similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
+    # top_indices = similarities.argsort()[-top_k:][::-1]
+
+    #def search_questionnaires(query, top_k=3):
+    query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
     similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
     top_indices = similarities.argsort()[-top_k:][::-1]
-    return questionnaire_desc.iloc[top_indices]['name']
+    print(f"\n\n\n\n\n\n\n\n{query_embedding = }")
+    print(f"{top_indices = }")
+    print(f"{similarities.shape = }")
+    print(f"{desc_embeddings.shape = }")
+    return questionnaire_desc.iloc[top_indices]
+    #return questionnaire_desc.iloc[top_indices]['name']
 
 
 st.set_page_config(page_title="Questionnaire Metadata Explorer", layout="wide")
@@ -107,17 +118,36 @@ questions = QuestionLoader().load_questions()
 
 # Text input for semantic search
 # Prepare sentence embeddings
-model = SentenceTransformer("all-MiniLM-L6-v2")
-desc_embeddings = model.encode(questionnaire_desc['Description'].to_list(),
-                               convert_to_tensor=True)
+
+
+
+
+# --- Load or compute sentence embeddings ---
+EMBEDDING_CACHE = "desc_embeddings.pkl"
+
+if os.path.exists(EMBEDDING_CACHE):
+    with open(EMBEDDING_CACHE, "rb") as f:
+        desc_embeddings = pickle.load(f)
+else:
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+    desc_embeddings = model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
+    with open(EMBEDDING_CACHE, "wb") as f:
+        pickle.dump(desc_embeddings, f)
+
+
+# Ensure we initialize the model only once
+if 'model' not in st.session_state:
+    st.session_state.model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 query = st.sidebar.text_input("Search by topic (e.g., 'anxiety', 'emotion')")
 
-if query:
+
+if query.strip():
     results = search_questionnaires(query,
                             desc_embeddings, questionnaire_desc)
-    top_names = results.tolist()
+    print(f"{len(questionnaire_desc) = }")
+    top_names = results['name'].tolist()
     st.sidebar.markdown("**Top Matches:**")
 else:
     top_names = questionnaire_names
