@@ -72,7 +72,7 @@ class QuestionLoader:
 
         splitting_map = {
             "immirisk_adolescents_mast_athens": {
-                'default': "MAST",
+                'default': "mast",
                 'other': "ATHENS"
             },
 
@@ -86,8 +86,8 @@ class QuestionLoader:
 
         for current_q_name in splitting_map.keys():
             if questionnaire_name == current_q_name:
-                default = splitting_map['current_q_name']['default']
-                other = splitting_map['current_q_name']['other']
+                default = splitting_map[current_q_name]['default']
+                other = splitting_map[current_q_name]['other']
 
                 if row[self.name_col].startswith(other.lower()):
                     return other

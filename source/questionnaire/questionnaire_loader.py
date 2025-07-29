@@ -63,7 +63,7 @@ class QuestionnaireLoader:
         }
 
         if questions:
-            basic_info['name_in_database'] = questions[0].questionnaire_alternative_name
+            basic_info['name_in_database'] = questions[0].questionnaire_database_name
         if research_data is not None:
             questionnaire_info = QuestionnaireInfo(
                 **basic_info, **research_data
