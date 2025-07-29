@@ -5,9 +5,6 @@ from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-import pickle
 
 sys.path.insert(0, os.getcwd())
 
@@ -83,81 +80,16 @@ def get_scoring(obj):
     """Extract scoring info from questionnaire object."""
     return getattr(obj, 'scoring_info', None)
 
-# Define semantic search function
-def search_questionnaires(query, desc_embeddings,
-                          questionnaire_desc, top_k=3):
-    # query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
-    # similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
-    # top_indices = similarities.argsort()[-top_k:][::-1]
-
-    #def search_questionnaires(query, top_k=3):
-
-    query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
-    similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
-    top_indices = similarities.argsort()[-top_k:][::-1]
-    print(f"\n\n\n\n\n\n\n\n{query_embedding = }")
-    print(f"{top_indices = }")
-    print(f"{similarities.shape = }")
-    print(f"{desc_embeddings.shape = }")
-    return questionnaire_desc.iloc[top_indices]
-    #return questionnaire_desc.iloc[top_indices]['name']
-
-
 st.set_page_config(page_title="Questionnaire Metadata Explorer", layout="wide")
 st.title("🧠 Questionnaire Metadata Explorer")
 
-# set RAG search-bar
-
 # Sidebar: Select questionnaire
-
-# --- Sidebar: Search and selection ---
-st.sidebar.header("Search or Select Questionnaire")
+st.sidebar.header("Select Questionnaire")
 questionnaires = QuestionnaireLoader().load_questionnaires()
-questionnaire_names = questionnaires.get_all_questionnaires()
-questionnaire_desc = questionnaires.get_questionnaires_desc()
-questionnaire_desc = questionnaire_desc[~questionnaire_desc['Description'].isna()]
+question_names = questionnaires.get_all_questionnaires()
 questions = QuestionLoader().load_questions()
 
-# Text input for semantic search
-# Prepare sentence embeddings
-
-
-
-
-# --- Load or compute sentence embeddings ---
-EMBEDDING_CACHE = "desc_embeddings.pkl"
-
-if os.path.exists(EMBEDDING_CACHE):
-    with open(EMBEDDING_CACHE, "rb") as f:
-        desc_embeddings = pickle.load(f)
-else:
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    desc_embeddings = model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
-    with open(EMBEDDING_CACHE, "wb") as f:
-        pickle.dump(desc_embeddings, f)
-
-
-# Ensure we initialize the model only once
-if 'model' not in st.session_state:
-    st.session_state.model = SentenceTransformer("all-MiniLM-L6-v2")
-
-
-query = st.sidebar.text_input("Search by topic (e.g., 'anxiety', 'emotion')")
-
-
-if query.strip():
-    results = search_questionnaires(query,
-                            desc_embeddings, questionnaire_desc)
-    print(f"{len(questionnaire_desc) = }")
-    top_names = results['name'].tolist()
-    st.sidebar.markdown("**Top Matches:**")
-    # Questionnaire selection
-    q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
-else:
-    q_name = st.sidebar.selectbox("Questionnaire", questionnaire_names, index=0)
-
-
-
+q_name = st.sidebar.selectbox("Questionnaire", question_names, index=0)
 selected_q = questionnaires.get_by_name(q_name)
 
 # Tabs for Metadata, Scoring, Questions
