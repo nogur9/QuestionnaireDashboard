@@ -51,7 +51,7 @@ class QuestionnaireLoader:
         items = self.questions_list.get_by_questionnaire(questionnaire_name, get_q_names=True)
         exceptional_items = [item.variable_name for item in questions if item.is_exceptional_item]
         timestamp_items = [item.variable_name for item in questions if item.is_timestamp]
-        research_data = self._get_data_from_scmci(items)
+        research_data = self._get_data_from_scmci(items, exceptional_items, timestamp_items)
 
         basic_info = {
         'name': questionnaire_name,
@@ -77,31 +77,36 @@ class QuestionnaireLoader:
         questionnaire_collection = []
 
         for questionnaire_name in list(self.questions_map_df.questionnaire.unique()):
-            # self._assert_question_list_size(questionnaire_name, self.questions_map_df)
+            # self._assert_question_list_size(questionnaire_name, self.questions_map_df,
+            # , exceptional_items, timestamp_items)
             questionnaires_info = self._create_questionnaire_info_entry(questionnaire_name)
             questionnaire_collection.append(questionnaires_info)
 
         return questionnaire_collection
 
 
-    def _assert_question_list_size(self, questionnaire_name, questions_map_df):
+    def _assert_question_list_size(self, questionnaire_name, questions_map_df,
+                                   exceptional_items, timestamp_items):
         q_from_sql = questions_map_df.query(f"questionnaire == '{questionnaire_name}'").standard_question_name.to_list()
         q_from_questions_list = self.questions_list.get_by_questionnaire(questionnaire_name, get_q_names=True)
+        q_from_sql = [q for q in q_from_sql if q not in exceptional_items + timestamp_items]
+        q_from_questions_list = [q for q in q_from_questions_list if q not in exceptional_items + timestamp_items]
+
         diff = set(q_from_sql).difference(set(q_from_questions_list)) | \
                    set(q_from_questions_list).difference(set(q_from_sql))
         if len(diff) > 0:
             print(f"contradiction found between predefined questions and collected question {questionnaire_name}: {diff}")
 #           assert  len(diff) == 0, f"contradiction found between predefined questions and collected question {questionnaire_name}: {diff}"
 
-    def _get_data_from_scmci(self, questions):
+    def _get_data_from_scmci(self, questions, exceptional_items, timestamp_items):
 
         def get_questionnaire(x, questions_list):
             is_present = [(q in x) for q in questions_list]
             return all(is_present)
-
+        essential_questions = [q for q in questions if q not in exceptional_items + timestamp_items]
         df = self.scmci_df = scmci_path_df.copy()
         df['q_list'] = df['Variable Name'].str.split("\n")
-        mask = df['q_list'].apply(get_questionnaire, args=[questions])
+        mask = df['q_list'].apply(get_questionnaire, args=[essential_questions])
 
         if mask.any():
             questionnaire_row = df.loc[mask].iloc[0]

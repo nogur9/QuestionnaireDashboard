@@ -5,7 +5,7 @@ from source.single_question.questions_loader import QuestionLoader
 import sys
 import os
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
-#from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 
@@ -91,6 +91,7 @@ def search_questionnaires(query, desc_embeddings,
     # top_indices = similarities.argsort()[-top_k:][::-1]
 
     #def search_questionnaires(query, top_k=3):
+
     query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
     similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
     top_indices = similarities.argsort()[-top_k:][::-1]
@@ -114,6 +115,7 @@ st.sidebar.header("Search or Select Questionnaire")
 questionnaires = QuestionnaireLoader().load_questionnaires()
 questionnaire_names = questionnaires.get_all_questionnaires()
 questionnaire_desc = questionnaires.get_questionnaires_desc()
+questionnaire_desc = questionnaire_desc[~questionnaire_desc['Description'].isna()]
 questions = QuestionLoader().load_questions()
 
 # Text input for semantic search
@@ -149,12 +151,13 @@ if query.strip():
     print(f"{len(questionnaire_desc) = }")
     top_names = results['name'].tolist()
     st.sidebar.markdown("**Top Matches:**")
+    # Questionnaire selection
+    q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
 else:
-    top_names = questionnaire_names
+    q_name = st.sidebar.selectbox("Questionnaire", questionnaire_names, index=0)
 
 
-# Questionnaire selection
-q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
+
 selected_q = questionnaires.get_by_name(q_name)
 
 # Tabs for Metadata, Scoring, Questions

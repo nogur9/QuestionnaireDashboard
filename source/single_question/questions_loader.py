@@ -67,7 +67,7 @@ class QuestionLoader:
         current = "immirisk_adolescents_mast_athens"
         default = "MAST"
         other = "ATHENS"
-        print(row)
+
         questionnaire_name = row[self.questionnaire_col]
         if questionnaire_name == current:
             if row[self.name_col].startswith(other.lower()):
