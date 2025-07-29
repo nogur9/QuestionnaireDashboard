@@ -5,7 +5,7 @@ from source.single_question.missing_questions import QualtricsAgeQuestion, Redca
 from source.utils.info_objects import QuestionsList, QuestionInfo
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
 from source.utils.timestamp_creator import TimestampCreator
-from dataframes import questionnaires_alternative_names_path_df
+from dataframes import questionnaires_database_names_map
 
 
 class QuestionLoader:
@@ -24,7 +24,7 @@ class QuestionLoader:
         self.exceptional_items = exceptional_items_path_df.copy()
 
         self.alternative_names = \
-            {i['alternative_name']: i['questionnaire']  for _, i in questionnaires_alternative_names_path_df.iterrows()}
+            {i['database-name']: i['questionnaire']  for _, i in questionnaires_database_names_map.iterrows()}
 
 
     def load_questions(self):
@@ -50,12 +50,17 @@ class QuestionLoader:
 
 
     def _extract_basic_info(self, row):
+        """
+        questionnaire_database_name = name in redcap data-dictionary
+        questionnaire_name = name in redcap columns list (how the researchers calls it)
+
+        """
         questionnaire_name = self._split_questionnaires(row)
 
         question_data = {
             "variable_name": row[self.name_col],
             "question_text": row[self.text_col],
-            "questionnaire_alternative_name": questionnaire_name,
+            "questionnaire_database_name": questionnaire_name,
             "is_timestamp": TimestampCreator.is_datetime_column(row[self.name_col]),
             'is_exceptional_item': row[self.name_col] in self.exceptional_items.question_name.tolist(),
             "branching_logic": row[self.branching_col],
@@ -64,19 +69,32 @@ class QuestionLoader:
         return question_data
 
     def _split_questionnaires(self, row):
-        current = "immirisk_adolescents_mast_athens"
-        default = "MAST"
-        other = "ATHENS"
+
+        splitting_map = {
+            "immirisk_adolescents_mast_athens": {
+                'default': "MAST",
+                'other': "ATHENS"
+            },
+
+            "piu_cyberbulling": {
+            'default': "piu",
+            'other': "cyberbulling"
+            }
+        }
 
         questionnaire_name = row[self.questionnaire_col]
-        if questionnaire_name == current:
-            if row[self.name_col].startswith(other.lower()):
-                return other
-            else:
-                return default
+
+        for current_q_name in splitting_map.keys():
+            if questionnaire_name == current_q_name:
+                default = splitting_map['current_q_name']['default']
+                other = splitting_map['current_q_name']['other']
+
+                if row[self.name_col].startswith(other.lower()):
+                    return other
+                else:
+                    return default
         else:
             return questionnaire_name
-
 
 
     def _get_question_type(self, row):
