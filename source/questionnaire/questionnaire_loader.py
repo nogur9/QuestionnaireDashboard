@@ -63,7 +63,7 @@ class QuestionnaireLoader:
         }
 
         if questions:
-            basic_info['name_in_database'] = questions[0].questionnaire_alternative_name
+            basic_info['name_in_database'] = questions[0].questionnaire_database_name
         if research_data is not None:
             questionnaire_info = QuestionnaireInfo(
                 **basic_info, **research_data
@@ -104,7 +104,7 @@ class QuestionnaireLoader:
             is_present = [(q in x) for q in questions_list]
             return all(is_present)
         essential_questions = [q for q in questions if q not in exceptional_items + timestamp_items]
-        df = self.scmci_df = scmci_path_df.copy()
+        df = scmci_path_df.copy()
         df['q_list'] = df['Variable Name'].str.split("\n")
         mask = df['q_list'].apply(get_questionnaire, args=[essential_questions])
 
