@@ -105,7 +105,13 @@ class QuestionnairesList:
         all_questionnaires = [q.name for q in self.questionnaires]
         return all_questionnaires
 
-    def get_questionnaires_desc(self):
-        qs = [{'name': q.name, 'Description':q.Description} for \
-         q in self.questionnaires if q.Description is not None]
+    def get_questionnaires_desc(self, with_full_name=True):
+        if with_full_name:
+            qs = [{'name': q.name, 'Description': f"Questionnaire Name: {q.Full_Name} Description: {q.Description}"} \
+                  for q in self.questionnaires if (q.Description is not None) \
+                  and (q.Full_Name is not None)]
+        else:
+            qs = [{'name': q.name, 'Description':q.Description} for \
+             q in self.questionnaires if q.Description is not None]
+
         return pd.DataFrame(qs)

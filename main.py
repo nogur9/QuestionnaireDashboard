@@ -121,20 +121,8 @@ questions = QuestionLoader().load_questions()
 # Text input for semantic search
 # Prepare sentence embeddings
 
-
-
-
-# --- Load or compute sentence embeddings ---
-EMBEDDING_CACHE = "desc_embeddings.pkl"
-
-if os.path.exists(EMBEDDING_CACHE):
-    with open(EMBEDDING_CACHE, "rb") as f:
-        desc_embeddings = pickle.load(f)
-else:
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    desc_embeddings = model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
-    with open(EMBEDDING_CACHE, "wb") as f:
-        pickle.dump(desc_embeddings, f)
+model = SentenceTransformer("all-MiniLM-L6-v2")
+desc_embeddings = model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
 
 
 # Ensure we initialize the model only once

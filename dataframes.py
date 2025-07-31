@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = ''
 
 scmci_path_df = pd.read_excel(os.path.join(BASE_DIR, 'Data', "Depression_Clinic_SCMCI_study_measures_2024.xlsx"))
 DataDictionary_path_df = pd.read_csv(os.path.join(BASE_DIR, 'Data',"ImmiRiskIPT2022_DataDictionary_2025-06-18.csv"))
