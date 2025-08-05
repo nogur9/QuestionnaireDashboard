@@ -33,17 +33,17 @@ class ScoreUtilsLoader:
 
     def load(self):
         scores_columns = self.scores_columns.copy()
-        scores_columns = self._duplicate_mother_and_father(scores_columns)
+        scores_columns = self.duplicate_mother_and_father(scores_columns)
         scores_columns = self._rewrite_default_columns(scores_columns)
         self.scores_columns = scores_columns
 
         reverse_items = self.reverse_items.copy()
-        reverse_items = self._duplicate_mother_and_father(reverse_items)
+        reverse_items = self.duplicate_mother_and_father(reverse_items)
         self.reverse_items = reverse_items
 
 
         clusters = self.clusters.copy()
-        clusters = self._duplicate_mother_and_father(clusters)
+        clusters = self.duplicate_mother_and_father(clusters)
         self.clusters = clusters
 
 
@@ -61,7 +61,7 @@ class ScoreUtilsLoader:
 
 
 
-    def _duplicate_mother_and_father(self, scoring_data: List):
+    def duplicate_mother_and_father(self, scoring_data: List):
 
         scoring_data = scoring_data.copy()
         participant_types_df = participant_types_file_path_df.copy()

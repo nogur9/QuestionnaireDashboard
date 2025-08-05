@@ -41,9 +41,11 @@ def display_scoring(scoring_data: dict):
         return
 
     for key, value in scoring_data.items():
-
+        print(f"{scoring_data = }\n {key = }\n{value = }")
         if key == 'aggregation_function':
             st.markdown(f"**{key}:** {repr(value)}")
+        elif value is None:
+            continue
         elif len(value) == 0:
             continue
         else:
