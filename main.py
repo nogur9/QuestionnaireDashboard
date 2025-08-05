@@ -7,7 +7,6 @@ import os
 from source.utils.info_objects import QuestionnaireInfo, QuestionInfo, ScoringInfo
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-import pickle
 
 sys.path.insert(0, os.getcwd())
 
@@ -85,7 +84,7 @@ def get_scoring(obj):
 
 # Define semantic search function
 def search_questionnaires(query, desc_embeddings,
-                          questionnaire_desc, top_k=3):
+                          questionnaire_desc, top_k=4):
     # query_embedding = st.session_state.model.encode(query, convert_to_tensor=True)
     # similarities = cosine_similarity([query_embedding], desc_embeddings)[0]
     # top_indices = similarities.argsort()[-top_k:][::-1]
@@ -121,21 +120,21 @@ questions = QuestionLoader().load_questions()
 # Text input for semantic search
 # Prepare sentence embeddings
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
-desc_embeddings = model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
 
 
 # Ensure we initialize the model only once
 if 'model' not in st.session_state:
     st.session_state.model = SentenceTransformer("all-MiniLM-L6-v2")
 
+desc_embeddings = st.session_state.model.encode(questionnaire_desc['Description'].tolist(), convert_to_tensor=True)
 
 query = st.sidebar.text_input("Search by topic (e.g., 'anxiety', 'emotion')")
+top_k = st.sidebar.selectbox(label="Top K", options=range(1,21), index=5)
 
 
 if query.strip():
-    results = search_questionnaires(query,
-                            desc_embeddings, questionnaire_desc)
+    results = search_questionnaires(query, desc_embeddings,
+                                    questionnaire_desc, top_k=int(top_k))
     print(f"{len(questionnaire_desc) = }")
     top_names = results['name'].tolist()
     st.sidebar.markdown("**Top Matches:**")

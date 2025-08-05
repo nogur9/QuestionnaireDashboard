@@ -14,6 +14,11 @@ class MultipleChoiceLoader:
     branching_col = "Branching Logic (Show field only if...)"
 
 
+    BinaryOptions = [{0: 'לא', 1:'כן'},
+                     {0: 'No', 1:'Yes'},
+                     {0: 'לא מילא', 1:'מילא'},
+                     {0: 'No - Control', 1:'Yes - Study Cohort'}
+                    ]
     def __init__(self, row):
         self.row = row
         self.choices_dict = self._get_choices_dict()
@@ -41,8 +46,13 @@ class MultipleChoiceLoader:
         assert self.row[self.type_col] == 'radio'
 
         if len(self.choices_dict.keys()) == 2:
-            if set(self.choices_dict.keys()) == {0, 1}:
-                return  QuestionType.CategoricalBinary
+            if set(self.choices_dict.keys()) == {0, 1}: #add yes \ no check
+                for binary_option in self.BinaryOptions:
+                    if (self.choices_dict[0] == binary_option[0]) and (self.choices_dict[1] == binary_option[1]):
+                        return QuestionType.Binary
+                else:
+                    print(f"non binary 0-1 {self.choices_dict}")
+                    return QuestionType.CategoricalBinary
             elif set(self.choices_dict.keys()) == {1, 2}:
                 return QuestionType.CategoricalBinary
 
@@ -50,6 +60,7 @@ class MultipleChoiceLoader:
             return QuestionType.Ordinal
         else:
             return QuestionType.Categorical
+
 
 
 

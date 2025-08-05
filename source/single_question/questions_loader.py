@@ -18,7 +18,8 @@ class QuestionLoader:
     type_col = 'Field Type'
     branching_col = "Branching Logic (Show field only if...)"
 
-    def __init__(self):
+    def __init__(self, init_validator=True):
+        self.init_validator = init_validator
         self.questions_collection = []
         self.df = DataDictionary_path_df.copy()
         self.exceptional_items = exceptional_items_path_df.copy()
@@ -149,11 +150,15 @@ class QuestionLoader:
         else:
             ancestor = None
 
-        return {
+        info =  {
             'question_type': question_type,
             'choices': choices,
             'ancestor': ancestor
         }
+
+        if self.init_validator:
+            info["validator"] = question_type.validator(row)
+        return info
 
 if __name__ == "__main__":
     ql = QuestionLoader()

@@ -2,7 +2,7 @@ from enum import Enum
 
 from source.utils.multiple_choice_loader import MultipleChoiceLoader
 from source.utils.question_type_utils import BinaryValidator, CategoricalValidator, NumericValidator, NullValidator, \
-    DateValidator
+    DateValidator, Validator
 from source.utils.textual_question_type import TextQuestionType
 
 
@@ -23,6 +23,7 @@ class ScoringMethod(Enum):
 
         return self.label
 
+
 class QuestionType(Enum):
     Binary = ('Binary', BinaryValidator, False)
     CategoricalBinary = ('Categorical Binary', CategoricalValidator, True)
@@ -33,7 +34,7 @@ class QuestionType(Enum):
     Date = ('Date', DateValidator, False)
     NoType = ('None', NullValidator, False)
 
-    def __init__(self, label, validator, has_choices_info):
+    def __init__(self, label: str, validator:Validator, has_choices_info: bool):
         self.label = label
         self.validator = validator
         self.has_choices_info = has_choices_info
@@ -60,7 +61,7 @@ class DataDictQuestionType(Enum):
     yesno = 'yesno',  lambda x :QuestionType.Binary
 
 
-    def __init__(self, label, get_question_type):
+    def __init__(self, label: str, get_question_type):
         self.label = label
         self.get_question_type = get_question_type
 
@@ -70,4 +71,3 @@ class DataDictQuestionType(Enum):
         for item in cls:
             if item.label == label:
                 return item
-

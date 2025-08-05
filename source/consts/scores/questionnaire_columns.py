@@ -106,7 +106,7 @@ Scores_Columns = {
     ], # V
     'cts_m': DEFAULT,
 
-    # cssrs
+    # cssrscts_c
     'c_ssrs_intake':[
         'c_ssrs_1_life',
         'c_ssrs_2_life',
@@ -448,7 +448,7 @@ Scores_Columns = {
         'ders_14',
         'ders_15',
         'ders_16',
-        'ders_17'
+        'ders_17',
         'ders_18',
         'ders_19',
         'ders_20',
@@ -481,8 +481,7 @@ Scores_Columns = {
         'cts_c_1',
         'cts_c_2',
         'cts_c_3',
-        'cts_c_4',
-        'cts_c_4_1'], # V
+        'cts_c_4'], # V
     'maris_y_scars_clin': DEFAULT, # V
     'trq_sf_maris_clin': [
         'trq_sf_maris_1_clin',
@@ -632,20 +631,4 @@ daytime_sleepiness_3_m
         'sci_c_5_1_stu',
         'sci_c_5_2_stu'
     ],
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 """

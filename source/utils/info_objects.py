@@ -1,11 +1,9 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any
-
+from source.consts.enums import QuestionType, ScoringMethod
 import pandas as pd
 
-from source.consts.enums import QuestionType, ScoringMethod
-
-
+from source.utils.question_type_utils import Validator
 
 
 @dataclass
@@ -17,6 +15,8 @@ class ScoringInfo:
     reversed_columns: List[str]
     clusters: Optional[Dict[str, List[str]]]
     need_clarification: bool
+    min_score: Optional[int] = None
+    max_score: Optional[int] = None
     def __repr__(self):
         return f"{self.questionnaire_name} Score method"
 
@@ -44,6 +44,7 @@ class QuestionInfo:
     ancestor: Optional[str] = None  # if type = checkbox
     choices: Optional[Dict[str, str]] = None  # value: meaning
     branching_logic: Optional[str] = None
+    validator: Optional[Validator] = None
 
     def __repr__(self):
         return self.variable_name
@@ -54,8 +55,29 @@ class QuestionsList:
     """Holds a list of all questions' metadata and provides query methods."""
     questions: List[QuestionInfo]
 
-    def get_by_variable_name(self, name: str) -> Optional[QuestionInfo]:
-        return next((q for q in self.questions if q.variable_name == name), None)
+
+    def __post_init__(self):
+        variables = [q.variable_name for q in self.questions]
+        unique_variables = set(variables)
+        assert len(variables) == len(unique_variables)
+
+
+    def get_by_variable_name(self, variable_name: str) -> Optional[QuestionInfo]:
+        requested_qs = [q for q in self.questions if q.variable_name == variable_name]
+        if len(requested_qs) == 0:
+            print(f"question not found {variable_name}")
+            return None
+
+        elif len(requested_qs) > 1:
+            raise Warning(f"found duplicated question {variable_name}")
+
+        return requested_qs[0]
+
+    def get_timestamp_questions(self, get_q_names=False):
+        if get_q_names:
+            return [q.variable_name for q in self.questions if q.is_timestamp]
+        else:
+            return [q for q in self.questions if q.is_timestamp]
 
     def get_by_questionnaire(self, questionnaire_name: str, get_q_names=False):
         if get_q_names:
@@ -71,6 +93,7 @@ class QuestionsList:
 
     def get_question_names(self):
         return [i.variable_name for i in self.questions]
+
 
 
 
@@ -93,25 +116,31 @@ class QuestionnaireInfo:
     def __repr__(self):
         return self.name
 
+    def get_standard_questions(self) -> List[str]:
+        questions = [q for q in self.items if (q not in self.exceptional_items) and \
+                                              (q not in self.timestamp_items)]
+        return questions
+
 @dataclass
 class QuestionnairesList:
     """Holds a list of all questionnaires' metadata and provides query methods."""
     questionnaires: List[QuestionnaireInfo]
 
     def get_by_name(self, name: str) -> Optional[QuestionnaireInfo]:
-        return next((q for q in self.questionnaires if q.name == name), None)
+        requested_q = [q for q in self.questionnaires if q.name.lower() == name.lower()]
+        if len(requested_q) == 0:
+            raise Warning(f"questionnaire not found {name}")
+
+        elif len(requested_q) > 1:
+            raise Warning(f"found duplicated questionnaire {name}")
+
+        return requested_q[0]
 
     def get_all_questionnaires(self) -> List[str]:
         all_questionnaires = [q.name for q in self.questionnaires]
         return all_questionnaires
 
-    def get_questionnaires_desc(self, with_full_name=True):
-        if with_full_name:
-            qs = [{'name': q.name, 'Description': f"Questionnaire Name: {q.Full_Name} Description: {q.Description}"} \
-                  for q in self.questionnaires if (q.Description is not None) \
-                  and (q.Full_Name is not None)]
-        else:
-            qs = [{'name': q.name, 'Description':q.Description} for \
-             q in self.questionnaires if q.Description is not None]
-
+    def get_questionnaires_desc(self):
+        qs = [{'name': q.name, 'Description':q.Description} for \
+         q in self.questionnaires if q.Description is not None]
         return pd.DataFrame(qs)
