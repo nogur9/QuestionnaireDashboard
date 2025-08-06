@@ -27,7 +27,7 @@ class ScoresList:
     scores: List[ScoringInfo]
 
     def get_by_questionnaire(self, questionnaire_name: str) -> Optional[ScoringInfo]:
-        return next((s for s in self.scores if s.questionnaire_name == questionnaire_name), None)
+        return next((s for s in self.scores if s.questionnaire_name.lower() == questionnaire_name.lower()), None)
 
 
 
@@ -63,7 +63,7 @@ class QuestionsList:
 
 
     def get_by_variable_name(self, variable_name: str) -> Optional[QuestionInfo]:
-        requested_qs = [q for q in self.questions if q.variable_name == variable_name]
+        requested_qs = [q for q in self.questions if q.variable_name.lower() == variable_name.lower()]
         if len(requested_qs) == 0:
             print(f"question not found {variable_name}")
             return None
@@ -81,9 +81,9 @@ class QuestionsList:
 
     def get_by_questionnaire(self, questionnaire_name: str, get_q_names=False):
         if get_q_names:
-            return [q.variable_name for q in self.questions if q.questionnaire_name == questionnaire_name]
+            return [q.variable_name for q in self.questions if q.questionnaire_name.lower() == questionnaire_name.lower()]
         else:
-            return [q for q in self.questions if q.questionnaire_name == questionnaire_name]
+            return [q for q in self.questions if q.questionnaire_name.lower() == questionnaire_name.lower()]
 
     def search_by_label(self, word: str) -> List[QuestionInfo]:
         return [q for q in self.questions if word.lower() in q.question_text.lower()]

@@ -12,7 +12,7 @@ sys.path.insert(0, os.getcwd())
 
 hidden_attributes = {
     QuestionnaireInfo: ['scoring_info',],
-    QuestionInfo:['questionnaire_name', 'questionnaire_alternative_name'],
+    QuestionInfo:['questionnaire_name', 'questionnaire_alternative_name', 'validator'],
     ScoringInfo:['questionnaire_name', 'need_clarification'],
     QualtricsAgeQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
     RedcapEventNameQuestion:['questionnaire_name', 'questionnaire_alternative_name'],
@@ -46,6 +46,8 @@ def display_scoring(scoring_data: dict):
             st.markdown(f"**{key}:** {repr(value)}")
         elif value is None:
             continue
+        elif type(value) == int:
+           st.markdown(f"**{key}:** {repr(value)}")
         elif len(value) == 0:
             continue
         else:
