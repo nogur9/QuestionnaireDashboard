@@ -31,12 +31,7 @@ def get_questions():
 
 @st.cache_resource(show_spinner=False)
 def get_model():
-    return SentenceTransformer("all-MiniLM-L6-v2")
-
-@st.cache_resource(show_spinner=False)
-def get_question_model():
-    """Multilingual model suitable for EN/HE question search (E5 style)."""
-    return SentenceTransformer("intfloat/multilingual-e5-base")
+    return SentenceTransformer("all-MiniLM-L6-v2") # bge-large-en-v1.5
 
 @st.cache_data(show_spinner=False)
 def compute_desc_embeddings(descriptions):
@@ -45,18 +40,11 @@ def compute_desc_embeddings(descriptions):
 
 @st.cache_data(show_spinner=False)
 def get_question_texts_and_embeddings():
-    """Return filtered question objects and their embeddings using E5 'passage:' prefix."""
+    """Return parallel lists of question objects and their embeddings (only those with text)."""
     questions_list = get_questions()
-    all_questions = [q for q in questions_list.questions if q.question_text]
-    # exclusions
-    static_exclude = ['intro', 'ending', 'ending_parent_f', 'ending_parent_m', 'er_questionnaire_clin', 'covid19']
-    suffix_exclude = {q.questionnaire_name for q in all_questions if (
-        q.questionnaire_name.endswith("_f") or q.questionnaire_name.endswith("_father") or q.questionnaire_name.endswith("_stu")
-    )}
-    excluded_names = set(static_exclude) | suffix_exclude
-    question_objs = [q for q in all_questions if q.questionnaire_name not in excluded_names]
-    texts = [f"passage: {q.question_text}" for q in question_objs]
-    model = get_question_model()
+    question_objs = [q for q in questions_list.questions if q.question_text]
+    texts = [q.question_text for q in question_objs]
+    model = get_model()
     embeddings = model.encode(texts, convert_to_tensor=True)
     return question_objs, embeddings
 
@@ -147,9 +135,9 @@ def search_questionnaires(query, desc_embeddings,
 
 
 def search_questions(query, question_embeddings, top_k=10):
-    """Return indices of top matching questions based on their text using E5 'query:' prefix."""
-    model = get_question_model()
-    query_embedding = model.encode(f"query: {query}", convert_to_tensor=True)
+    """Return indices of top matching questions based on their text."""
+    model = get_model()
+    query_embedding = model.encode(query, convert_to_tensor=True)
     similarities = cosine_similarity([query_embedding], question_embeddings)[0]
     top_indices = similarities.argsort()[-top_k:][::-1]
     return top_indices
@@ -172,55 +160,31 @@ questions = get_questions()
 
 # Precompute and cache embeddings
 desc_embeddings = compute_desc_embeddings(questionnaire_desc['Description'].tolist())
-question_objs, question_embeddings = get_question_texts_and_embeddings()
 
 # Controls
-search_scope = st.sidebar.radio("Search in", ["Descriptions", "Questions"], index=0, horizontal=True)
 query = st.sidebar.text_input("Search by topic or text (e.g., 'anxiety', 'פגיעה עצמית')")
 top_k = st.sidebar.selectbox(label="Top K", options=range(1,21), index=5)
 
 q_name = None
-matched_questions = []
 if query.strip():
-    if search_scope == "Descriptions":
-        results = search_questionnaires(query, desc_embeddings,
-                                        questionnaire_desc, top_k=int(top_k))
-        print(f"{len(questionnaire_desc) = }")
-        top_names = results['name'].tolist()
-        st.sidebar.markdown("**Top Matches:**")
-        q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
-    else:
-        # Questions search
-        top_q_indices = search_questions(query, question_embeddings, top_k=int(top_k))
-        matched_questions = [question_objs[i] for i in top_q_indices]
-        # Show quick preview of matches
-        with st.sidebar.expander("Top question matches", expanded=True):
-            for idx, q in enumerate(matched_questions):
-                preview_text = q.question_text or ""
-                preview = preview_text if len(preview_text) <= 120 else preview_text[:117] + "..."
-                st.markdown(f"**{idx+1}.** {preview}  ")
-                st.caption(f"{q.questionnaire_name} · {q.variable_name}")
-        # Let user choose among matched questionnaires (deduped, order-preserving)
-        dedup_qnames = []
-        for q in matched_questions:
-            if q.questionnaire_name not in dedup_qnames:
-                dedup_qnames.append(q.questionnaire_name)
-        if len(dedup_qnames) == 0:
-            q_name = st.sidebar.selectbox("Questionnaire", questionnaire_names, index=0)
-        else:
-            st.sidebar.markdown("**Matched Questionnaires:**")
-            q_name = st.sidebar.selectbox("Questionnaire", dedup_qnames, index=0)
+    results = search_questionnaires(query, desc_embeddings,
+                                    questionnaire_desc, top_k=int(top_k))
+    print(f"{len(questionnaire_desc) = }")
+    top_names = results['name'].tolist()
+    st.sidebar.markdown("**Top Matches:**")
+    q_name = st.sidebar.selectbox("Questionnaire", top_names, index=0)
+
 else:
     q_name = st.sidebar.selectbox("Questionnaire", questionnaire_names, index=0)
 
 
 selected_q = questionnaires.get_by_name(q_name)
 
-# Tabs for Metadata, Scoring, Questions (+ Results)
+# Tabs for Metadata, Scoring, Questions
 if selected_q is None:
     st.error(f"No data found for questionnaire: {q_name}")
 else:
-    tabs = st.tabs(["Metadata", "Scoring", "Questions", "Results"])
+    tabs = st.tabs(["Metadata", "Scoring", "Questions"])
     with tabs[0]:
         st.subheader("📋 Questionnaire Metadata")
         questionnaire_metadata = get_attributes(selected_q)
@@ -241,15 +205,3 @@ else:
             for question in q_list:
                 question_metadata = get_attributes(question)
                 display_question(question_metadata)
-
-    with tabs[3]:
-        st.subheader("🔎 Search Results")
-        if search_scope == "Questions" and query.strip() and matched_questions:
-            for q in matched_questions:
-                st.markdown(f"**{q.questionnaire_name}** · `{q.variable_name}`")
-                st.write(q.question_text)
-                if q.choices:
-                    st.caption(f"Choices: {q.choices}")
-                st.markdown("---")
-        else:
-            st.info("Run a question search to see matched questions here.")
