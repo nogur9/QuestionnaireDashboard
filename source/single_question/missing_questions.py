@@ -11,6 +11,7 @@ class QualtricsAgeQuestion(QuestionInfo):
         'question_text': 'גיל',
         'question_type': QuestionType.Numeric,
         'questionnaire_name': 'opening_child_pre',
+        "project_source": 'both'
         }
 
 
@@ -21,12 +22,15 @@ class QualtricsAgeQuestion(QuestionInfo):
 class RedcapEventNameQuestion(QuestionInfo):
 
     def __init__(self):
+        RedcapEventName = 'redcap_event_name'
 
         params = {
-        'variable_name': 'redcap_event_name',
-        'question_text': 'redcap_event_name',
+        'variable_name': RedcapEventName,
+        'question_text': RedcapEventName,
         'question_type': QuestionType.Categorical,
         'questionnaire_name': 'intro',
+        "is_timestamp": False,
+        "project_source": 'both'
         }
         super().__init__(**params)
 
@@ -42,6 +46,7 @@ class TimestampQuestion(QuestionInfo):
         'question_text': 'timestamp',
         'question_type': QuestionType.Date,
         'questionnaire_name': questionnaire,
-        'is_timestamp': True
+        'is_timestamp': True,
         }
+
         super().__init__(**params)

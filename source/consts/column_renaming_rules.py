@@ -1,6 +1,5 @@
+
 # qualtrics redcap - map
-
-
 TRANSFORMATION_RULES = {
 
     'opening_child_pre': 'EXTRA QUESTIONS IN QUALTRICS', # age_child_pre_first
@@ -109,4 +108,72 @@ TRANSFORMATION_RULES = {
 }
 
 
-INFO_COLUMNS = ['record_id', 'redcap_event_name', 'id']
+
+Stepped_Care_Extras  = {
+ 'cors_c': 'STEPPED_ONLY',
+ 'cssrs_c_intake': 'STEPPED_ONLY',
+ 'cssrs_c_measurs': 'STEPPED_ONLY',
+ 'derss_c': 'STEPPED_ONLY',
+ 'cpss_c': 'STEPPED_ONLY',
+ 'chs': 'STEPPED_ONLY',
+ 'mspss': 'STEPPED_ONLY',
+ 'csq4_c': 'STEPPED_ONLY',
+ 'ending_child': 'STEPPED_ONLY',
+ 'asq_parent_m_5de6': 'STEPPED_ONLY',
+ 'srs_s_parent_m': 'STEPPED_ONLY',
+ 'orscors_child_m': 'STEPPED_ONLY',
+ 'wai_parent_m': 'STEPPED_ONLY',
+ 'csq4_parent_m': 'STEPPED_ONLY',
+ 'asq_parent_f_f16b': 'STEPPED_ONLY',
+ 'srs_s_parent_f': 'STEPPED_ONLY',
+ 'orscors_child_f': 'STEPPED_ONLY',
+ 'wai_parent_f_6e34': 'STEPPED_ONLY',
+ 'csq4_parent_f': 'STEPPED_ONLY',
+ 'opening_clinician': 'STEPPED_ONLY',
+ 'criteria_for_ipc': 'STEPPED_ONLY',
+ 'cssrs_clin_ssc': 'STEPPED_ONLY',
+ 'cgas_clin': 'STEPPED_ONLY',
+ 'ending_clin': 'STEPPED_ONLY',
+
+}
+
+
+
+# Questionnaires Renaming
+
+q_names_step_to_redcap = {
+    'opening_child': 'opening_child_pre',
+    'sci_c': 'sciafca',
+    'scared_sr': 'scared',
+    'sas_c': 'sas',
+    'wai_c': 'wai',
+    'dass21_m': 'dass_m',
+    'ending_m': 'ending_parent_m',
+    'demographic_father': 'demographic_parents_f',
+    'dass21_f_585e': 'dass_f',
+    'sci_clin': "sci_c_clin",
+    'cgi_s_i_clin': 'cgi_s_clin',
+    'wai_clin': 'wai_immirisk_clin',
+    'csq4_c': 'estimation_and_satisfaction'
+
+
+}
+q_names_redcap_to_step = {v: k for k, v in q_names_step_to_redcap.items()}
+
+"""
+not_sure_renames = {
+    'cssrs_c_intake': 'cssrs_intake',
+    'cssrs_c_measurs': 'cssrs_intake',
+    'ending_child': 'ending',
+    'criteria_for_ipc': 'screening_form',
+    'cssrs_clin_ssc': 'cssrs_t_clin',
+    'ending_clin': 'ending'
+}
+
+other
+    [
+ 'csq4_parent_f',
+ 'csq4_parent_m',
+ 'ending_parent_f',
+ ]
+"""

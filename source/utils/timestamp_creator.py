@@ -1,15 +1,10 @@
 import pandas as pd
 
 
-
 class TimestampCreator:
 
-    def __init__(self, timestamp_column="timestamp", use_all_timestamps_columns = False):
-       pass
-
-    def get(self, df: pd.DataFrame):
+    def __init__(self):
         pass
-
 
     @staticmethod
     def is_datetime_column(col_name):

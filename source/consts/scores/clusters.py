@@ -15,19 +15,18 @@ Clusters = {
 
     'sdq': SDQ_clusters,
 
-    'erc_rc': {
-        'erc_rc_anxiety': ['erc_rc_1', 'erc_rc_2', 'erc_rc_3', 'erc_rc_4', 'erc_rc_5', 'erc_rc_6'],
-        'erc_rc_avoidance': ['erc_rc_7', 'erc_rc_8', 'erc_rc_9', 'erc_rc_10', 'erc_rc_11', 'erc_rc_12']
+    'ecrrc': {
+        'ecr_rc_anxiety': ['erc_rc_1', 'erc_rc_2', 'erc_rc_3', 'erc_rc_4', 'erc_rc_5', 'erc_rc_6'],
+        'ecr_rc_avoidance': ['erc_rc_7', 'erc_rc_8', 'erc_rc_9', 'erc_rc_10', 'erc_rc_11', 'erc_rc_12']
     },
 
     'mast': {
-    'MAST_AL': ['MAST_1', 'MAST_5', 'MAST_6', 'MAST_13', 'MAST_18', 'MAST_19', 'MAST_25', 'MAST_28'],
-    'MAST_RL': ['MAST_2', 'MAST_9', 'MAST_14', 'MAST_15', 'MAST_16', 'MAST_21', 'MAST_30'],
-    'MAST_AD': ['MAST_8', 'MAST_17', 'MAST_22', 'MAST_23', 'MAST_26', 'MAST_27', 'MAST_29'],
-    'MAST_RD': ['MAST_3', 'MAST_4', 'MAST_7', 'MAST_10', 'MAST_11', 'MAST_12', 'MAST_20', 'MAST_24']
-    },
+    'mast_al': ['mast_1', 'mast_5', 'mast_6', 'mast_13', 'mast_18', 'mast_19', 'mast_25', 'mast_28'],
+    'mast_rl': ['mast_2', 'mast_9', 'mast_14', 'mast_15', 'mast_16', 'mast_21', 'mast_30'],
+    'mast_ad': ['mast_8', 'mast_17', 'mast_22', 'mast_23', 'mast_26', 'mast_27', 'mast_29'],
+    'mast_rd': ['mast_3', 'mast_4', 'mast_7', 'mast_10', 'mast_11', 'mast_12', 'mast_20', 'mast_24']},
 
-    'erq_ca': {
+    'erqca': {
         'Cognitive Reappraisal': ['erq_ca_1', 'erq_ca_3', 'erq_ca_5', 'erq_ca_7', 'erq_ca_8', 'erq_ca_10'],
         'Expressive Suppression': ['erq_ca_2', 'erq_ca_4', 'erq_ca_6', 'erq_ca_9'],
     },

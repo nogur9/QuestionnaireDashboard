@@ -2,7 +2,7 @@
 
 Reverse_Items = {
         'sdq': ['sdq_7', 'sdq_11', 'sdq_14', 'sdq_21', 'sdq_25'],
-        'erc_rc': ['erc_rc_10', 'erc_rc_11', 'erc_rc_12'],
+        'ecrrc': ['erc_rc_10', 'erc_rc_11', 'erc_rc_12'],
         'ders': ['ders_1',
                  'ders_2',
                  'ders_6',
@@ -29,8 +29,10 @@ Reverse_Items = {
                  'ders_24_p_m',
                  'ders_34_p_m'
                 ],
-        'trq_sf_maris_clin': ['trq_sf_maris_1_clin', 'trq_sf_maris_2_clin',
+        'trqsfmarisclin': ['trq_sf_maris_1_clin', 'trq_sf_maris_2_clin',
                           'trq_sf_maris_3_clin', 'trq_sf_maris_4_clin'],
+        'trqsfmaris_stu': ['trq_sf_maris_1_stu', 'trq_sf_maris_2_stu',
+                          'trq_sf_maris_3_stu', 'trq_sf_maris_4_stu'],
 
         #'sdq_parents_m': ['sdq_7', 'sdq_11', 'sdq_14', 'sdq_21', 'sdq_25'],
 }

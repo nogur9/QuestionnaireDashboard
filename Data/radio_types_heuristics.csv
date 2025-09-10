@@ -1,7 +1,0 @@
-question,is_numeric,questionnaire
-mini_class_clin,False,mini_kid_sum_clin
-main_dianose_clin,False,mini_kid_sum_clin
-c_ssrs_t_time_clin,False,cssrs_t_clin
-mini_class_stu,False,mini_kid_sum_stu
-main_dianose_stu,False,mini_kid_sum_stu
-c_ssrs_t_time_stu,False,cssrs_t_stu

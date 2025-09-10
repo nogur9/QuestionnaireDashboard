@@ -21,7 +21,7 @@ Scores_Columns = {
         "swan_16_m",
         "swan_17_m",
         "swan_18_m"],  # V
-    'sci_mother': [
+    'scip_m': [
         'sci_p_1_m',
         'sci_p_2_m',
         'sci_p_3_m',
@@ -41,7 +41,7 @@ Scores_Columns = {
     'sdq_parents_m': DEFAULT, # V
     'ders_p_m': DEFAULT, # V
     'erq_m': DEFAULT, # V
-    'ari_p_m': [
+    'arippps_m': [
         'ari_p_1_m', 'ari_p_2_m', 'ari_p_3_m', 'ari_p_4_m', 'ari_p_5_m', 'ari_p_6_m'], # V
     'ecr_m': [
         'ecr_1_m',
@@ -106,7 +106,7 @@ Scores_Columns = {
     ], # V
     'cts_m': DEFAULT,
 
-    # cssrs
+    # cssrscts_c
     'c_ssrs_intake':[
         'c_ssrs_1_life',
         'c_ssrs_2_life',
@@ -194,7 +194,7 @@ Scores_Columns = {
     'wai_immirisk_clin': DEFAULT,
 
     # normal
-    'mfq': [
+    'mfq_short': [
     'mfq_1',
     'mfq_2',
     'mfq_5',
@@ -252,7 +252,7 @@ Scores_Columns = {
     'sdq_24',
     'sdq_25'
 ], # V
-    'sci_af_ca': [
+    'sciafca': [
     'sci_af_ca_1',
     'sci_af_ca_2',
     'sci_af_ca_3',
@@ -362,12 +362,12 @@ Scores_Columns = {
     'sas_22',
     'sas_23'
 ], # V
-    'erc_rc': [
+    'ecrrc': [
         'erc_rc_1', 'erc_rc_2', 'erc_rc_3',
         'erc_rc_4', 'erc_rc_5', 'erc_rc_6',
         'erc_rc_7', 'erc_rc_8', 'erc_rc_9',
         'erc_rc_10', 'erc_rc_11', 'erc_rc_12'], # V
-    'ari_s': [
+    'aris': [
         'ari_s_1',
         'ari_s_2',
         'ari_s_3',
@@ -424,7 +424,7 @@ Scores_Columns = {
              'cyberbulling_5', 'cyberbulling_6', 'cyberbulling_7', 'cyberbulling_8',
              'cyberbulling_9', 'cyberbulling_10', 'cyberbulling_11',
              'bullied_1', 'bullied_2', 'bullied_3', 'bullied_4'], # V
-    'erq_ca': [ # V
+    'erqca': [ # V
         'erq_ca_1', 'erq_ca_2',
         'erq_ca_3', 'erq_ca_4',
         'erq_ca_5',
@@ -448,7 +448,7 @@ Scores_Columns = {
         'ders_14',
         'ders_15',
         'ders_16',
-        'ders_17'
+        'ders_17',
         'ders_18',
         'ders_19',
         'ders_20',
@@ -471,7 +471,7 @@ Scores_Columns = {
     'wai': ['wai_1', 'wai_2', 'wai_3', 'wai_4',  # V
             'wai_5', 'wai_6', 'wai_7', 'wai_8',
             'wai_9', 'wai_10', 'wai_11', 'wai_12'], # V
-    'satis': DEFAULT, # V
+    'estimation_and_satisfaction': DEFAULT, # V
     'dshi_pre': DEFAULT, # V
     'dshi_post': DEFAULT, # V
     'inq': [
@@ -481,10 +481,9 @@ Scores_Columns = {
         'cts_c_1',
         'cts_c_2',
         'cts_c_3',
-        'cts_c_4',
-        'cts_c_4_1'], # V
+        'cts_c_4'], # V
     'maris_y_scars_clin': DEFAULT, # V
-    'trq_sf_maris_clin': [
+    'trqsfmarisclin': [
         'trq_sf_maris_1_clin',
         'trq_sf_maris_2_clin',
         'trq_sf_maris_3_clin',
@@ -500,6 +499,23 @@ Scores_Columns = {
         'trq_sf_maris_13_clin',
         'trq_sf_maris_14_clin'
     ], # V
+    'trqsfmaris_stu': [
+        'trq_sf_maris_1_stu',
+        'trq_sf_maris_2_stu',
+        'trq_sf_maris_3_stu',
+        'trq_sf_maris_4_stu',
+        'trq_sf_maris_5_stu',
+        'trq_sf_maris_6_stu',
+        'trq_sf_maris_7_stu',
+        'trq_sf_maris_8_stu',
+        'trq_sf_maris_9_stu',
+        'trq_sf_maris_10_stu',
+        'trq_sf_maris_11_stu',
+        'trq_sf_maris_12_stu',
+        'trq_sf_maris_13_stu',
+        'trq_sf_maris_14_stu'
+    ],  # V
+
     'cgi_s_clin': ['cgi_s_base_clin'], # V   There is a column named - cgi_s_clin, in the opening questionnaire, might be confusing
     'cps_clin': DEFAULT,  # V
     'cdrsr_clin': DEFAULT,  # V   -  not cdrs_sum_clin
