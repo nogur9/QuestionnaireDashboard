@@ -1,4 +1,4 @@
-import sys
+#import sys
 import os
 
 from source.questionnaire.questionnaire_loader import QuestionnaireLoader
@@ -6,7 +6,7 @@ from source.single_question.questions_loader import QuestionLoader
 from source.utils.info_objects import QuestionInfo, QuestionnaireInfo
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.getcwd())
+#sys.path.insert(0, os.getcwd())
 import inspect
 import streamlit as st
 from app_utils import (_nonempty, _as_url, _unique_compact_list, _enum_to_str,

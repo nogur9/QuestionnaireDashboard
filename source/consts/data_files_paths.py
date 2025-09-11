@@ -1,9 +1,12 @@
 import os
 
-# metadata utilities
-METADATA_DIR = "Data"
+# Base directory = the folder where this file lives
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Metadata directory inside project
+METADATA_DIR = os.path.join(BASE_DIR, "Data")
 
+# Paths to data files
 scmci_path_df = os.path.join(METADATA_DIR, "Depression_Clinic_SCMCI_study_measures_2024.xlsx")
 stepped_data_dict = os.path.join(METADATA_DIR, "SteppedCareIPC2025_DataDictionary_2025-06-18.csv")
 DataDictionary_path_df = os.path.join(METADATA_DIR, "ImmiRiskIPT2022_DataDictionary_2025-06-18.csv")
