@@ -4,7 +4,7 @@ from source.single_question.questions_loader import QuestionLoader
 from source.utils.info_objects import ScoringInfo, QuestionInfo
 from typing import List
 from source.consts.enums import QuestionType
-from source.consts.data_files_paths import participant_types_file_path
+from data_files_paths import participant_types_file_path
 from source.consts.scores.clusters import Clusters
 from source.consts.scores.questionnaire_columns import Scores_Columns, DEFAULT
 from source.consts.scores.reverse_items import Reverse_Items

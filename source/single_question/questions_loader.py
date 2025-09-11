@@ -1,5 +1,5 @@
 import pandas as pd
-from source.consts.data_files_paths import *
+from data_files_paths import *
 from source.consts.enums import DataDictQuestionType
 from source.questionnaire.questions_mapping_creator import QuestionsMappingCreator
 from source.utils.info_objects import QuestionsList

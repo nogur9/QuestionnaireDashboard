@@ -5,7 +5,7 @@ from source.scores.scores_loader import ScoresLoader
 from source.single_question.questions_loader import QuestionLoader
 from source.utils.info_objects import QuestionnairesList, QuestionnaireInfo, QuestionInfo
 import pandas as pd
-from source.consts.data_files_paths import participant_types_file_path, scmci_path_df, \
+from data_files_paths import participant_types_file_path, scmci_path_df, \
     questionnaires_database_names_map_path
 
 

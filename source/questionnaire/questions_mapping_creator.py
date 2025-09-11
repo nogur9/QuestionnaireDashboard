@@ -1,5 +1,5 @@
 import pandas as pd
-from source.consts.data_files_paths import (
+from data_files_paths import (
     redcap_column_names_path,
     qualtrics_column_names_path,
     imputation_map_path,
