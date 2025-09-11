@@ -2,7 +2,7 @@ import pandas as pd
 from source.consts.data_files_paths import *
 from source.consts.enums import DataDictQuestionType
 from source.questionnaire.questions_mapping_creator import QuestionsMappingCreator
-from source.utils.info_objects import QuestionInfo, QuestionsList
+from source.utils.info_objects import QuestionsList
 from source.single_question.missing_questions import *
 from source.utils.multiple_choice_loader import MultipleChoiceLoader, LoadSlider
 from source.utils.textual_question_type import normalize_for_match

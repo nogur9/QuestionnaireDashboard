@@ -1,3 +1,31 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+
+
+# additional
+
+# --- Jupyter / generic checkpoints ---
+.ipynb_checkpoints/
+**/checkpoints/
+*checkpoint*
+*.ckpt
+
+# --- CatBoost training artifacts ---
+catboost_info/
+**/catboost_info/
+
+# --- Data & outputs (ignore by default) ---
+*.csv
+*.html
+*.png
+
+# --- Keep exceptions ("unless said otherwise") ---
+# Put files you DO want tracked in these folders or list them explicitly.
+!data/keep/*.csv
+!reports/keep/*.html
+!images/keep/*.png
+# Or unignore a specific file:
+#!some/path/figure.png
+
+/Data/processed
