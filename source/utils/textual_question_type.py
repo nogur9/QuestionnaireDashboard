@@ -27,8 +27,13 @@ class TextQuestionType:
     def get_type_classification(self):
         from source.consts.enums import QuestionType
 
+        var_name = self.row[self.name_col]
         val_type = self.row[self.validation_col]
-        if val_type in self.date_type_validation:
+
+        if 'id' in var_name.split("_"):
+            textual_question_type = QuestionType.Textual
+
+        elif val_type in self.date_type_validation:
             textual_question_type = QuestionType.Date
 
         elif val_type in self.numeric_type_validation:
