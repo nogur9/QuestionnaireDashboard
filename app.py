@@ -75,7 +75,7 @@ def display_questions_info(displayed_question_list: List["QuestionInfo"], *,
         with c1:
             search = st.text_input("Search Var/Text", placeholder="search…")
         with c2:
-            types_sel = st.multiselect("Type", options=type_values, default=type_values)
+            types_sel = st.multiselect("Type", options=type_values, default=[])
         with c3:
             sources_sel = st.multiselect("Source", options=source_values, default=source_values)
         with c4:
