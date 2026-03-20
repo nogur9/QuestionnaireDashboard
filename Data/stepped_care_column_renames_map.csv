@@ -7,8 +7,8 @@ opening,,group_study,External,opening
 opening,,type_treat,External,opening
 opening,,measure_time,External,opening
 opening,,unit_name,External,opening
-opening_child_pre,,opening_child_timestamp,External,opening_child
-opening_child_pre,,age_child,External,opening_child
+opening_child_pre,,opening_child_timestamp,Manually,opening_child
+opening_child_pre,age_child_pre,age_child,External,opening_child
 opening_child_pre,,sex,External,opening_child
 opening_child_pre,,gender1,External,opening_child
 opening_child_pre,,sexual_orientation,External,opening_child
@@ -726,9 +726,9 @@ chameleon,chameleon_medicine_other_stu,chameleon_medicine_other_stu,Simple,chame
 chameleon,chameleon_notes_stu,chameleon_notes_stu,Simple,chameleon
 cts_c,cts_c_timestamp,cts_c_timestamp,Simple,cts_c
 cts_c,cts_c_4_1,cts_c_4_1,Simple,cts_c
-opening_parents_m,,birth_d,Simple,opening_parents_m
+opening_parents_m,child_age_m,birth_d,Manually,opening_parents_m
 ending_parent_m,,medicin_child_m,Simple,ending_m
-opening_parents_f,,birth_date_f,Simple,opening_parents_f
+opening_parents_f,child_age_f,birth_date_f,Manually,opening_parents_f
 ending_parent_f,,medicin_child_f,Simple,ending_parent_f
 cgi_s_clin,,cgi_improve,Simple,cgi_s_i_clin
 sdq_parents_m,sdq_2_parents_m,sdq_2_p_m,Simple,sdq_parents_m

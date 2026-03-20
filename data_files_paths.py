@@ -8,10 +8,10 @@ METADATA_DIR = os.path.join(BASE_DIR, "Data")
 
 # Paths to data files
 scmci_path_df = os.path.join(METADATA_DIR, "Depression_Clinic_SCMCI_study_measures_2024.xlsx")
-stepped_data_dict = os.path.join(METADATA_DIR, "SteppedCareIPC2025_DataDictionary_2025-06-18.csv")
+stepped_data_dict = os.path.join(METADATA_DIR, "SteppedCareIPC2025_DataDictionary_2025-11-24.csv")
 DataDictionary_path_df = os.path.join(METADATA_DIR, "ImmiRiskIPT2022_DataDictionary_2025-06-18.csv")
 
-redcap_column_names_path = os.path.join(METADATA_DIR, "redcap_column_names.xlsx")
+redcap_column_names_path = os.path.join(METADATA_DIR, "immi_risk_column_names.xlsx")
 qualtrics_column_names_path = os.path.join(METADATA_DIR, "qualtrics_column_names.xlsx")
 imputation_map_path = os.path.join(METADATA_DIR, "imputation_map.csv")
 stepped_care_map_path = os.path.join(METADATA_DIR, "stepped_care_column_renames_map.csv")
