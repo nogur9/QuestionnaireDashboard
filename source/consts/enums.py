@@ -1,9 +1,13 @@
 from enum import Enum
 from typing import List
-from source.utils.custom_scorers import SumScorer, AverageScorer, SingleItemScorer
-from source.utils.question_type_utils import *
-from source.utils.questionnaire_scorer import QuestionnaireScorer
-from source.utils.textual_question_type import TextQuestionType
+
+from source.consts.standard_names import *
+from source.data_preprocessing.questionnaire_scores.utils.predefined_scorers import (SumScorer, AverageScorer,
+                                                                                     SingleItemScorer, CSSRSScorer)
+from source.data_preprocessing.questionnaire_scores.utils.questionnaire_scorer import QuestionnaireScorer
+
+from source.utils.question_types.question_type_utils import *
+from source.utils.question_types.textual_question_type import TextQuestionType
 
 
 class ScoringMethod(Enum):
@@ -27,6 +31,7 @@ class UniqueScoringMethod(Enum):
     Chameleon_Scoring =  None, 'chameleon'
     Cpss_c_Scoring = None, 'cpss_c'
     Cps_Clin_Scoring = None, 'cps_clin'
+    C_SSRS_Scoring = CSSRSScorer, 'C_SSRS_Scoring'
 
     def __init__(self, scorer_class: QuestionnaireScorer, questionnaire: str):
         self.scorer_class = scorer_class
@@ -121,10 +126,24 @@ class DataDictQuestionType(Enum):
                 return item
 
 
+class InfoColumns(Enum):
+    DATABASE_INFO_COLUMNS = 'DATABASE_INFO_COLUMNS', [PATIENT_ID_COLUMN, 'record_id', 'redcap_event_name']
+    PATIENT_INFO = 'PATIENT_INFO', [PATIENT_ID_COLUMN, GENDER_COL, AGE_COL] # GROUP_COL
+    GROUPS = 'GROUPS', ['group___1', 'group___2', 'group___3']
+
+
+    def __init__(self, label: str, columns: List[str]):
+        self.label = label
+        self.columns = columns
+
+
+
 class DataSource(Enum):
     Qualtrics = "Qualtrics", "qualtrics_name"
     RedCap = "RedCap", "redcap_name"
+    Step = "SteppedCare", "stepped_care_name"
     QualtricsImputation = "Imputation_for_Qualtrics", "imputation_table_name"
+    StepWithRepeat = "stepped care with repeating instruments", "---"
 
 
     def __init__(self, label: str, column_name_map: str):

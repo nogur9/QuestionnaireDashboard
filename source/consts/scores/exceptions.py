@@ -13,26 +13,24 @@ Null_Scores = [
 'suicide_form_clin',
 'mini_kid_sum_clin',
 'mini_kid_sum_stu',
-'ending_parent_m',
 'opening_parents_f',
 'opening_students',
-'cgi_s_stu',
 'remote_stu',
 'ending_parent_f',
+'opening_clinician',
+'ending_clin',
+'ending_child',
+'ending_parent_m',
+'opening_therapist_battery',
 'ending',
 'opening_parents_m',
 'intro',
-'opening_clinician',
-'ending_clin',
 ]
 
 
 Unique_Scores = [
-# 'mfq_short',
 'chameleon',
-# 'estimation_and_satisfaction',
 'cpss_c',
-'scared',
 'cps_clin'
 ]
 

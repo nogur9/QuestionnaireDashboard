@@ -12,6 +12,7 @@ from source.data_etl.questionnaires_metadata.info_objects import QuestionInfo
 from source.data_etl.questionnaires_metadata.stepped_care.single_question.questions_loader import QuestionLoader
 from source.data_preprocessing.pathology_variables.pathologies_map import PathologiesNames
 from source.data_preprocessing.pathology_variables.pathology_variable import PathologyVariable
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.insert(0, os.getcwd())
 
