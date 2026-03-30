@@ -1,5 +1,4 @@
 from source.data_preprocessing.questionnaire_scores.utils.questionnaire_scorer import QuestionnaireScorer
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 class CustomScorer(QuestionnaireScorer):
@@ -26,9 +25,13 @@ class CustomScorer(QuestionnaireScorer):
     def _calculate_aggregated_score(self, df, columns):
 
         if self.normalization == 'z-score':
+            from sklearn.preprocessing import StandardScaler
+
             scaler = StandardScaler()
 
         elif self.normalization == 'MinMax':
+            from sklearn.preprocessing import MinMaxScaler
+
             scaler = MinMaxScaler()
 
         elif self.normalization == 'None':

@@ -1,11 +1,8 @@
+
 streamlit~=1.37.1
-pandas~=2.2.2
+pandas~=2.2.3
 openpyxl
-python-dateutil~=2.9.0post0
+python-dateutil
 
-beautifulsoup4~=4.12.3
-
-
-scikit-learn>=1.4
-numpy>=1.26
-scipy>=1.11
+numpy
+beautifulsoup4
