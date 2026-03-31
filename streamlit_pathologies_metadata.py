@@ -17,6 +17,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.getcwd())
 
 
+
 def _enum_name(e: Any) -> str:
     """Safe enum name."""
     try:
