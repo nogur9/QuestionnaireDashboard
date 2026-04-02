@@ -153,3 +153,8 @@ suicidal_ideation_time2 = [
     'chameleon_ideation_stu'
 ]
 
+
+suicidal_ideation_cols = list(set(suicidal_ideation_life_intake + suicidal_ideation_time2))
+suicidal_behavior_cols = list(set(suicidal_behavior_time2 + suicidal_behavior_intake))
+suicidal_attempt_cols = list(set(suicidal_attempt_time2+suicide_attempt_intake))
+nssi_cols = list(set(nssi_time2+nssi_intake))
