@@ -138,30 +138,13 @@ def _render_question_cards(dff: pd.DataFrame,
             st.markdown(badges_html, unsafe_allow_html=True)
 
         with c2:
-            cols = st.columns(2)
             choices_cnt = int(row.get("Choices", 0) or 0)
-            with cols[0]:
-                if choices_cnt > 0 and q and isinstance(q.choices, dict):
-                    with st.popover(f"Choices {choices_cnt}"):
-                        data = [{"Value": str(k), "Meaning": str(v)} for k, v in q.choices.items()]
-                        st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True, height=220)
-                else:
-                    st.caption("Choices —")
-
-            with cols[1]:
-                has_branch = bool(q and _nonempty(q.branching_logic))
-                has_val = bool(q and q.validator)
-                if has_branch or has_val:
-                    with st.popover("Details"):
-                        if has_branch:
-                            st.markdown("**Branching logic**")
-                            st.code(q.branching_logic, language="text")
-                        if has_val:
-                            st.markdown("**Validator**")
-                            vtxt = getattr(q.validator, "name", None) or getattr(q.validator, "pattern", None) or str(q.validator)
-                            st.code(vtxt, language="text")
-                else:
-                    st.caption("Details —")
+            if choices_cnt > 0 and q and isinstance(q.choices, dict):
+                with st.popover(f"Choices {choices_cnt}"):
+                    data = [{"Value": str(k), "Meaning": str(v)} for k, v in q.choices.items()]
+                    st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True, height=220)
+            else:
+                st.caption("Choices —")
 
         st.divider()
 
@@ -229,8 +212,6 @@ def display_pathology_items(items: List[str], questions_index: Any):
                 "Source": "",
                 "Questionnaire": "",
                 "Choices": 0,
-                "Branching?": "",
-                "Validator": "",
             })
             continue
 
@@ -245,8 +226,6 @@ def display_pathology_items(items: List[str], questions_index: Any):
             "Source": source,
             "Questionnaire": qname,
             "Choices": len(q.choices) if isinstance(q.choices, dict) else 0,
-            "Branching?": "✓" if _nonempty(q.branching_logic) else "",
-            "Validator": getattr(q.validator, "name", getattr(q.validator, "pattern", "")) if q.validator else "",
         })
 
     df = pd.DataFrame.from_records(recs)
@@ -327,23 +306,7 @@ if not selected_pathology:
     st.info("No pathologies found.")
 else:
     variants = PathologiesNames.get(selected_pathology, []) or []
-    variant_labels = []
-    for i, v in enumerate(variants):
-        flags = []
-        if getattr(v, "only_intake_evaluation", False):
-            flags.append("intake")
-        if getattr(v, "only_follow_up_evaluation", False):
-            flags.append("follow-up")
-        suffix = f" ({', '.join(flags)})" if flags else ""
-        variant_labels.append(f"Variant {i+1}{suffix} · {len(v.questions or [])} items")
-
-    chosen = st.sidebar.multiselect(
-        "Include variants",
-        options=list(range(len(variants))),
-        default=list(range(len(variants))),
-        format_func=lambda i: variant_labels[i] if i < len(variant_labels) else str(i),
-    )
-    chosen_variants = [variants[i] for i in chosen] if chosen else []
+    chosen_variants = variants
 
     all_items: List[str] = []
     for v in chosen_variants:
