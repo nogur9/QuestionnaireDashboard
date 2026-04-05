@@ -6,6 +6,7 @@ import pandas as pd
 import hashlib
 from dataclasses import asdict, is_dataclass
 
+from source.consts.enums import ScoringMethod
 from source.data_etl.questionnaires_metadata.info_objects import QuestionInfo, QuestionnaireInfo, ScoringInfo
 from source.data_etl.questionnaires_metadata.stepped_care.questionnaire.questionnaire_loader import QuestionnaireLoader
 from source.data_etl.questionnaires_metadata.stepped_care.single_question.questions_loader import QuestionLoader
@@ -56,15 +57,70 @@ def _nonempty(x) -> bool:
         return x.strip() != ""
     return True
 
+
+def _format_question_options(q: QuestionInfo) -> str:
+    """Human-readable options / range for table and cards (choices, one-hot, slider)."""
+    q_type = _enum_to_str(q.question_type)
+    if q_type == "Slider":
+        parts: list[str] = []
+        details = getattr(q.validator, "details", None) if q.validator else None
+        if isinstance(details, dict):
+            mn, mx = details.get("min_val"), details.get("max_val")
+            if mn is not None and mx is not None:
+                parts.append(f"Range {mn}–{mx}")
+        ch = q.choices
+        if ch is not None and not (isinstance(ch, float) and pd.isna(ch)):
+            label = str(ch).strip()
+            if label and label.lower() != "nan":
+                if label not in " ".join(parts):
+                    parts.append(label[:120] + ("…" if len(label) > 120 else ""))
+        return " · ".join(parts) if parts else "—"
+
+    if isinstance(q.choices, dict) and q.choices:
+        if q.ancestor and "___" in q.variable_name:
+            raw_key = q.variable_name.split("___", 1)[1]
+            opt_key: Any = raw_key
+            try:
+                opt_key = int(raw_key)
+            except ValueError:
+                pass
+            if opt_key in q.choices:
+                return str(q.choices[opt_key])
+            if raw_key in q.choices:
+                return str(q.choices[raw_key])
+        vals = [str(v) for v in q.choices.values()]
+        s = " | ".join(vals[:12])
+        if len(vals) > 12:
+            s += f" … (+{len(vals) - 12} more)"
+        return s
+
+    if q.ancestor:
+        return f"One-hot (field `{q.ancestor}`)"
+
+    return "—"
+
+
+def _choices_popover_label(q: Optional[QuestionInfo]) -> tuple[str, bool]:
+    """Title for choices popover and whether it has content."""
+    if not q:
+        return "Options", False
+    q_type = _enum_to_str(q.question_type)
+    if q_type == "Slider":
+        return "Range / labels", _format_question_options(q) != "—"
+    if isinstance(q.choices, dict) and q.choices:
+        return f"Choices ({len(q.choices)})", True
+    return "Options", False
+
+
 def _render_question_cards(dff: pd.DataFrame,
                            type_colors: Dict[str, str],
                            source_colors: Dict[str, str],
                            questions_raw: list[QuestionInfo],
                            limit: int = 250):
     """
-    Card list with clickable 'Choices' popovers per question.
-    'dff' is the filtered table (with columns Var/Text/Type/Source/...)
-    'questions_raw' is the original list (to retrieve full choices & full text)
+    Card list with optional options/range popovers per question.
+    `dff` is the filtered table (Var/Text/Type/Source/Options/…).
+    `questions_raw` is the original list (full text, choices, flags).
     """
     # Build a quick index: var_name -> QuestionInfo
     by_var = {q.variable_name: q for q in questions_raw}
@@ -96,28 +152,28 @@ def _render_question_cards(dff: pd.DataFrame,
                 badges_html += _badge(t, type_colors.get(t, "#888888"))
             if s:
                 badges_html += _badge(s, source_colors.get(s, "#888888"))
-            if row["Timestamp"] == "✓":
+            if q and q.is_timestamp:
                 badges_html += _badge("timestamp", "#4c78a8")
-            if row["Exceptional"] == "✓":
+            if q and q.is_exceptional_item:
                 badges_html += _badge("exceptional", "#e45756")
             st.markdown(badges_html, unsafe_allow_html=True)
 
         with c2:
             # Right column: interactive chips
             cols = st.columns(2)
-            # Choices popover (clickable)
-            choices_cnt = int(row["Choices"] or 0)
+            pop_title, has_opts = _choices_popover_label(q)
             with cols[0]:
-                if choices_cnt > 0:
-                    with st.popover(f"Choices {choices_cnt}"):
-                        # show as a small table: key -> meaning
-                        data = []
-                        if q and isinstance(q.choices, dict):
-                            for k, v in q.choices.items():
-                                data.append({"Value": str(k), "Meaning": str(v)})
-                        st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True, height=220)
+                if has_opts:
+                    with st.popover(pop_title):
+                        if q and _enum_to_str(q.question_type) == "Slider":
+                            st.markdown(_format_question_options(q))
+                        elif q and isinstance(q.choices, dict):
+                            data = [{"Value": str(k), "Meaning": str(v)} for k, v in q.choices.items()]
+                            st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True, height=220)
+                        else:
+                            st.caption("—")
                 else:
-                    st.caption("Choices —")
+                    st.caption("Options —")
 
             # Extras popover (branching/validator)
             with cols[1]:
@@ -248,15 +304,13 @@ def display_questions_info(displayed_question_list: List["QuestionInfo"], *,
             "Text": text_short,
             "Type": q_type,
             "Source": source,
-            "Timestamp": "✓" if q.is_timestamp else "",
-            "Exceptional": "✓" if q.is_exceptional_item else "",
-            "Ancestor": q.ancestor or "",
-            "Choices": len(q.choices) if isinstance(q.choices, dict) else 0,
-            "Branching?": "✓" if _nonempty(q.branching_logic) else "",
-            "Validator": getattr(q.validator, "name", getattr(q.validator, "pattern", "")) if q.validator else "",
+            "Options": _format_question_options(q),
+            "_timestamp": bool(q.is_timestamp),
+            "_exceptional": bool(q.is_exceptional_item),
         })
 
     df = pd.DataFrame.from_records(recs)
+    display_cols = ["Var", "Text", "Type", "Source", "Options"]
 
     # Palettes (colorblind-friendly leaning)
     palette = [
@@ -296,11 +350,12 @@ def display_questions_info(displayed_question_list: List["QuestionInfo"], *,
     if _nonempty(sources_sel):
         mask &= df["Source"].isin(sources_sel)
     if only_ts:
-        mask &= (df["Timestamp"] == "✓")
+        mask &= df["_timestamp"]
     if only_exc:
-        mask &= (df["Exceptional"] == "✓")
+        mask &= df["_exceptional"]
 
     dff = df.loc[mask].copy()
+    dff_view = dff[display_cols]
 
     # --- Legends (badges) ---
     with st.expander("Legend / color keys", expanded=False):
@@ -313,12 +368,24 @@ def display_questions_info(displayed_question_list: List["QuestionInfo"], *,
 
 
     st.caption(f"{len(dff):,} questions match filters")
-    styler = _style_questions_df(dff, type_colors, source_colors)
-    st.dataframe(styler, use_container_width=True, hide_index=True, height=min(680, 42 + 28*min(len(dff), 22)))
+    styler = _style_questions_df(dff_view, type_colors, source_colors)
+    st.dataframe(
+        styler,
+        use_container_width=True,
+        hide_index=True,
+        height=min(680, 42 + 28 * min(len(dff_view), 22)),
+        column_config={
+            "Options": st.column_config.TextColumn("Options", width="large"),
+        },
+    )
 
     # After rendering Flat / Group by Type / Group by Source:
     st.markdown("")  # small spacer
-    enable_cards = st.toggle("Card view with clickable choices", value=False, help="Shows a scrollable list where each row has a 'Choices' popover.")
+    enable_cards = st.toggle(
+        "Card view with options popovers",
+        value=False,
+        help="Scrollable list with an options/range popover per question when available.",
+    )
     if enable_cards:
         _render_question_cards(dff, type_colors, source_colors, displayed_question_list)
 
@@ -468,7 +535,6 @@ def display_scoring(scoring_data: dict):
 
 
     for key, value in scoring_data.items():
-        print(f"{scoring_data = }\n {key = }\n{value = }")
         if key == 'aggregation_function':
             st.markdown(f"**{key}:** {repr(value)}")
         elif value is None:
@@ -513,7 +579,21 @@ def get_scoring(obj):
     """Extract scoring info from questionnaire object."""
     return getattr(obj, 'scoring_info', None)
 
-def render_scoring_info(info) -> None:
+def _no_scoring_message(info: ScoringInfo) -> Optional[str]:
+    """Return a user-facing message when this questionnaire has no item-level scoring."""
+    agg = info.aggregation_function
+    if isinstance(agg, ScoringMethod):
+        if agg is ScoringMethod.No_Scoring:
+            return "There is **no scoring** for this questionnaire (marked as no scoring needed)."
+        if agg is ScoringMethod.Missing_Implementation_Scoring:
+            return "There is **no scoring** for this questionnaire yet (implementation missing)."
+    cols = list(info.columns or [])
+    if len(cols) == 0:
+        return "There is **no scoring** configured: no scoring columns are defined."
+    return None
+
+
+def render_scoring_info(info: Optional[ScoringInfo]) -> None:
     """
     Rich, compact Scoring display with a single outer expander (no nested expanders).
     Internally uses tabs + selectors to avoid Streamlit's "nested expander" restriction.
@@ -528,8 +608,12 @@ def render_scoring_info(info) -> None:
     reversed_cols = set(info.reversed_columns or [])
     cluster_rev = _clusters_reverse_index(clusters)
     has_range = info.min_score is not None or info.max_score is not None
+    no_score_msg = _no_scoring_message(info)
 
     with st.expander("🧮 Scoring", expanded=True):
+        if no_score_msg:
+            st.info(no_score_msg)
+
         # --- Top summary "badges" ---
         c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
         with c1:
@@ -540,14 +624,6 @@ def render_scoring_info(info) -> None:
             st.markdown(f"**Clusters:** `{len(clusters)}`")
         with c4:
             st.markdown(f"**Range:** `{info.min_score} – {info.max_score}`" if has_range else "**Range:** `—`")
-
-        f1, f2, f3 = st.columns(3)
-        with f1:
-            st.markdown(f"**Need clarification:** {'✅ Yes' if info.need_clarification else '❌ No'}")
-        with f2:
-            st.markdown(f"**Step-adjust required:** {'✅ Yes' if getattr(info, 'require_step_adj', False) else '❌ No'}")
-        with f3:
-            st.markdown(f"**Scorer class:** `{getattr(scorer_cls, '__name__', str(scorer_cls))}`" if scorer_cls else "**Scorer class:** `—`")
 
         st.divider()
 
@@ -625,10 +701,10 @@ st.title("🧠 Questionnaire Metadata Explorer")
 # Sidebar: Select questionnaire
 st.sidebar.header("Select Questionnaire")
 questionnaires = get_questionnaires()
-question_names = questionnaires.get_all_questionnaires()
+question_names = sorted(questionnaires.get_all_questionnaires(), key=str.lower)
 questions = get_questions()
 
-q_name = st.sidebar.selectbox("Questionnaire", question_names, index=24)
+q_name = st.sidebar.selectbox("Questionnaire", question_names, index=0)
 selected_q = questionnaires.get_by_name(q_name)
 
 
